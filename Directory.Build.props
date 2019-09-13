@@ -1,0 +1,15 @@
+<Project>
+  <PropertyGroup>
+    <DromedaryAppTargetFrameworks Condition="$(ThingAppTargetFrameworks) == ''">netcoreapp3.0</DromedaryAppTargetFrameworks>
+    <DromedaryLibTargetFrameworks Condition="$(ThingLibTargetFrameworks) == ''">netstandard2.1</DromedaryLibTargetFrameworks>
+
+    <Product>Dromedary</Product>
+    <NeutralLanguage>en-US</NeutralLanguage>
+
+    <PackageProjectUrl>https://github.com/lillo42/dromedary</PackageProjectUrl>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <IncludeSymbols>true</IncludeSymbols>
+    <LangVersion>preview</LangVersion>
+  </PropertyGroup>
+</Project>
