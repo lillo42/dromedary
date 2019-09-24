@@ -1,6 +1,6 @@
 namespace Dromedary
 {
-    public interface IDromedary
+    public interface IProducer : IProcessor
     {
         
     }
