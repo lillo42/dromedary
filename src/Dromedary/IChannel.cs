@@ -1,7 +1,9 @@
+using System.Collections.Generic;
+
 namespace Dromedary
 {
-    public interface IChannel
+    public interface IChannel : IEnumerable<IProcessor>, IEnumerator<IProcessor>
     {
-        IChannelNode Root { get; }
+        
     }
 }

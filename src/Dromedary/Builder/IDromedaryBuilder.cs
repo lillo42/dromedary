@@ -1,14 +1,20 @@
 ﻿using System;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 
-namespace Dromedary
+namespace Dromedary.Builder
 {
     public interface IDromedaryBuilder
     {
         IServiceCollection Service { get; }
         IDromedaryBuilder AddLogging(Action<ILoggingBuilder> configure);
+
+        #region Set
+        IDromedaryBuilder SetId(string id);
+        IDromedaryBuilder SetName(string name);
+        IDromedaryBuilder SetVersion(string version);
+        #endregion
+        
 
         #region Component
 

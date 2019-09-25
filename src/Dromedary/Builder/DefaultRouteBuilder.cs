@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Dromedary.Commands;
 using Dromedary.Factories;
+using Dromedary.Statements;
 
 namespace Dromedary.Builder
 {
@@ -9,15 +10,21 @@ namespace Dromedary.Builder
     {
         private readonly IDromedaryContext _context;
         private readonly ICommandFactory _commandFactory;
-        private IChannelNode _lastNode;
+        private readonly IStatementFactory _statementFactory;
+        private readonly IRouteGraphBuilder _graphBuilder;
 
-        private string _id;
+        private string _id = Guid.NewGuid().ToString();
         private string _description;
 
-        public DefaultRouteBuilder(IDromedaryContext context, ICommandFactory commandFactory)
+        public DefaultRouteBuilder(IDromedaryContext context, 
+            ICommandFactory commandFactory, 
+            IStatementFactory statementFactory, 
+            IRouteGraphBuilder graphBuilder)
         {
-            _context = context;
-            _commandFactory = commandFactory;
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+            _commandFactory = commandFactory ?? throw new ArgumentNullException(nameof(commandFactory));
+            _statementFactory = statementFactory;
+            _graphBuilder = graphBuilder;
         }
 
         #region Configure
@@ -46,48 +53,57 @@ namespace Dromedary.Builder
         public IRouteBuilder From<T>(Action<T> configure)
             where T : class, IDromedaryComponent
         {
-            var command = _commandFactory.CreateCommand<T>(configure);
-            _root = new DefaultChannelNode(null, command);
+            AddFrom(_commandFactory.CreateCommand(configure));
             return this;
         }
 
         public IRouteBuilder From<T>(Action<T, IExchange> configure) 
             where T : class, IDromedaryComponent
         {
-            throw new NotImplementedException();
+            AddFrom(_commandFactory.CreateCommand(configure));
+            return this;
         }
 
         public IRouteBuilder From<T>(Action<IDromedaryComponent> configure, Type componentType)
         {
-            throw new NotImplementedException();
+            AddFrom(_commandFactory.CreateCommand(configure, componentType));
+            return this;
         }
 
         public IRouteBuilder From(Action<IDromedaryComponent, IExchange> configure, Type componentType)
         {
-            throw new NotImplementedException();
+            AddFrom(_commandFactory.CreateCommand(configure, componentType));
+            return this;
         }
 
         public IRouteBuilder From<T>(Func<T, Task> configure) 
             where T : class, IDromedaryComponent
         {
-            throw new NotImplementedException();
+            AddFrom(_commandFactory.CreateCommand(configure));
+            return this;
         }
 
         public IRouteBuilder From<T>(Func<T, IExchange, Task> configure) 
             where T : class, IDromedaryComponent
         {
-            throw new NotImplementedException();
+            AddFrom(_commandFactory.CreateCommand(configure));
+            return this;
         }
 
         public IRouteBuilder From<T>(Func<IDromedaryComponent, Task> configure, Type componentType)
         {
-            throw new NotImplementedException();
+            AddFrom(_commandFactory.CreateCommand(configure, componentType));
+            return this;
         }
 
         public IRouteBuilder From(Func<IDromedaryComponent, IExchange, Task> configure, Type componentType)
         {
-            throw new NotImplementedException();
+            AddFrom(_commandFactory.CreateCommand(configure, componentType));
+            return this;
         }
+
+        private void AddFrom(ICommand command) 
+            => _graphBuilder.Add(_statementFactory.Create(command, Statement.From));
 
         #endregion
 
@@ -101,65 +117,55 @@ namespace Dromedary.Builder
         public IRouteBuilder To<T>(Action<T> configure) 
             where T : class, IDromedaryComponent
         {
-            AddNode(_commandFactory.CreateCommand(configure));
+            AddTo(_commandFactory.CreateCommand(configure));
             return this;
         }
 
         public IRouteBuilder To<T>(Action<T, IExchange> configure) 
             where T : class, IDromedaryComponent
         {
-            AddNode(_commandFactory.CreateCommand(configure));
+            AddTo(_commandFactory.CreateCommand(configure));
             return this;
         }
 
         public IRouteBuilder To(Action<IDromedaryComponent, IExchange> configure, Type componentType)
         {
-            AddNode(_commandFactory.CreateCommand(configure, componentType));
+            AddTo(_commandFactory.CreateCommand(configure, componentType));
             return this;
         }
 
         public IRouteBuilder To<T>(Func<T, Task> configure) 
             where T : class, IDromedaryComponent
         {
-            AddNode(_commandFactory.CreateCommand(configure));
+            AddTo(_commandFactory.CreateCommand(configure));
             return this;
         }
 
         public IRouteBuilder To<T>(Func<T, IExchange, Task> configure) 
             where T : class, IDromedaryComponent
         {
-            AddNode(_commandFactory.CreateCommand(configure));
+            AddTo(_commandFactory.CreateCommand(configure));
             return this;
         }
 
         public IRouteBuilder To(Func<IDromedaryComponent, IExchange, Task> configure, Type componentType)
         {
-            AddNode(_commandFactory.CreateCommand(configure, componentType));
+            AddTo(_commandFactory.CreateCommand(configure, componentType));
             return this;
+        }
+        
+        private void AddTo(ICommand command)
+        {
+            var statement = _statementFactory.Create(command, Statement.To);
+            _graphBuilder.Add(statement);
         }
 
         #endregion
-
-        private void AddNode(ICommand command)
-        {
-            if (_lastNode == null)
-            {
-                _lastNode = new DefaultChannelNode(null, command);
-            }
-            else
-            {
-                var node = new DefaultChannelNode(_lastNode, command);
-                _lastNode.Children.Add(node);
-                _lastNode = node;
-            }
-        }
-
+        
         #region Build
 
-        public IRoute Build()
-        {
-            throw new NotImplementedException();
-        }
+        public IRoute Build() 
+            => new DefaultRoute(_id, _description, _graphBuilder.Build(), _context);
 
         #endregion
     }
