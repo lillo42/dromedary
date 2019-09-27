@@ -69,7 +69,11 @@ namespace Dromedary.Test
             _provider.GetService(typeof(IRouteBuilder))
                 .Returns(builder);
 
-            _context.AddRoute(b => { });
+            _context.AddRoute(b =>
+            {
+                b.Should().NotBeNull();
+                b.Should().Be(builder);
+            });
 
             _context.Routes.Should().NotBeNull();
             _context.Routes.Should().NotBeNullOrEmpty();

@@ -11,6 +11,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{C99A1A4F-5
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dromedary.Test", "test\Dromedary.Test\Dromedary.Test.csproj", "{199CFB88-056A-4F65-AE21-9A5C18940D0B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dromedary.Acceptance.Test", "test\Dromedary.Acceptance.Test\Dromedary.Acceptance.Test.csproj", "{4EB901C7-C68F-4B28-BBB8-2D145F457C17}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -48,9 +50,22 @@ Global
 		{199CFB88-056A-4F65-AE21-9A5C18940D0B}.Release|x64.Build.0 = Release|Any CPU
 		{199CFB88-056A-4F65-AE21-9A5C18940D0B}.Release|x86.ActiveCfg = Release|Any CPU
 		{199CFB88-056A-4F65-AE21-9A5C18940D0B}.Release|x86.Build.0 = Release|Any CPU
+		{4EB901C7-C68F-4B28-BBB8-2D145F457C17}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4EB901C7-C68F-4B28-BBB8-2D145F457C17}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4EB901C7-C68F-4B28-BBB8-2D145F457C17}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{4EB901C7-C68F-4B28-BBB8-2D145F457C17}.Debug|x64.Build.0 = Debug|Any CPU
+		{4EB901C7-C68F-4B28-BBB8-2D145F457C17}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{4EB901C7-C68F-4B28-BBB8-2D145F457C17}.Debug|x86.Build.0 = Debug|Any CPU
+		{4EB901C7-C68F-4B28-BBB8-2D145F457C17}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4EB901C7-C68F-4B28-BBB8-2D145F457C17}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4EB901C7-C68F-4B28-BBB8-2D145F457C17}.Release|x64.ActiveCfg = Release|Any CPU
+		{4EB901C7-C68F-4B28-BBB8-2D145F457C17}.Release|x64.Build.0 = Release|Any CPU
+		{4EB901C7-C68F-4B28-BBB8-2D145F457C17}.Release|x86.ActiveCfg = Release|Any CPU
+		{4EB901C7-C68F-4B28-BBB8-2D145F457C17}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{BB9A7EA6-77E4-4C09-8582-16A015230343} = {BDB2D447-2341-456B-8962-E78E8FA6DD97}
 		{199CFB88-056A-4F65-AE21-9A5C18940D0B} = {C99A1A4F-5F72-4E57-9EBB-E1F93F1152B5}
+		{4EB901C7-C68F-4B28-BBB8-2D145F457C17} = {C99A1A4F-5F72-4E57-9EBB-E1F93F1152B5}
 	EndGlobalSection
 EndGlobal
