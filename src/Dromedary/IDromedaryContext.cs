@@ -10,7 +10,7 @@ namespace Dromedary
         string Name { get; }
         string Version { get; }
         DateTime UpTime { get; }
-        IReadOnlyCollection<IRoute> Routes { get; }
+        IEnumerable<IRoute> Routes { get; }
         IServiceProvider Service { get; }
 
         void AddRoute(Action<IRouteBuilder> builder);

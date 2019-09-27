@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Dromedary.Builder
 {
-    public class DromedaryBuilder : IDromedaryBuilder
+    public class DromedaryContextBuilder : IDromedaryContextBuilder
     {
         private readonly ILoggingBuilder _builder;
         private readonly IServiceCollection _service;
@@ -18,13 +18,13 @@ namespace Dromedary.Builder
         private string _name;
         private string _version = "1.0.0";
 
-        public DromedaryBuilder()
+        public DromedaryContextBuilder()
             : this(new ServiceCollection())
         {
             
         }
 
-        public DromedaryBuilder(IServiceCollection service)
+        public DromedaryContextBuilder(IServiceCollection service)
         {
             _service = service;
             _builder = new LoggingBuilder(service);
@@ -47,9 +47,9 @@ namespace Dromedary.Builder
             _service.TryAddTransient<IRouteBuilder, DefaultRouteBuilder>();
         }
 
-        IServiceCollection IDromedaryBuilder.Service => _service;
+        IServiceCollection IDromedaryContextBuilder.Service => _service;
 
-        IDromedaryBuilder IDromedaryBuilder.AddLogging(Action<ILoggingBuilder> configure)
+        IDromedaryContextBuilder IDromedaryContextBuilder.AddLogging(Action<ILoggingBuilder> configure)
         {
             configure(_builder);
             return this;
@@ -57,19 +57,19 @@ namespace Dromedary.Builder
         
         #region Set
 
-        IDromedaryBuilder IDromedaryBuilder.SetId(string id)
+        IDromedaryContextBuilder IDromedaryContextBuilder.SetId(string id)
         {
             _id = id ?? throw new ArgumentNullException(nameof(id));
             return this;
         }
 
-        IDromedaryBuilder IDromedaryBuilder.SetName(string name)
+        IDromedaryContextBuilder IDromedaryContextBuilder.SetName(string name)
         {
             _name = name;
             return this;
         }
 
-        IDromedaryBuilder IDromedaryBuilder.SetVersion(string version)
+        IDromedaryContextBuilder IDromedaryContextBuilder.SetVersion(string version)
         {
             _version = version ?? throw new ArgumentNullException(nameof(version));;
             return this;
@@ -78,79 +78,79 @@ namespace Dromedary.Builder
 
         #region Component
 
-        IDromedaryBuilder IDromedaryBuilder.AddComponent<TService>()
+        IDromedaryContextBuilder IDromedaryContextBuilder.AddComponent<TService>()
         {
             _service.AddTransient<TService>();
             return this;
         }
 
-        IDromedaryBuilder IDromedaryBuilder.AddComponent<TService>(ServiceLifetime lifetime)
+        IDromedaryContextBuilder IDromedaryContextBuilder.AddComponent<TService>(ServiceLifetime lifetime)
         {
             _service.Add(new ServiceDescriptor(typeof(TService), typeof(TService), lifetime));
             return this;
         }
 
-        IDromedaryBuilder IDromedaryBuilder.AddComponent<TService>(Func<IServiceProvider, TService> implement)
+        IDromedaryContextBuilder IDromedaryContextBuilder.AddComponent<TService>(Func<IServiceProvider, TService> implement)
         {
             _service.AddTransient(implement);
             return this;
         }
 
-        IDromedaryBuilder IDromedaryBuilder.AddComponent<TService>(Func<IServiceProvider, TService> implement, ServiceLifetime lifetime)
+        IDromedaryContextBuilder IDromedaryContextBuilder.AddComponent<TService>(Func<IServiceProvider, TService> implement, ServiceLifetime lifetime)
         {
             _service.Add(new ServiceDescriptor(typeof(TService), implement, lifetime));
             return this;
         }
 
-        IDromedaryBuilder IDromedaryBuilder.AddComponent<TService, TImplementation>()
+        IDromedaryContextBuilder IDromedaryContextBuilder.AddComponent<TService, TImplementation>()
         {
             _service.AddTransient<TService, TImplementation>();
             return this;
         }
 
-        IDromedaryBuilder IDromedaryBuilder.AddComponent<TService, TImplementation>(ServiceLifetime lifetime)
+        IDromedaryContextBuilder IDromedaryContextBuilder.AddComponent<TService, TImplementation>(ServiceLifetime lifetime)
         {
             _service.Add(new ServiceDescriptor(typeof(TService), typeof(TImplementation), lifetime));
             return this;
         }
 
-        IDromedaryBuilder IDromedaryBuilder.AddComponent<TService, TImplementation>(TImplementation implementation)
+        IDromedaryContextBuilder IDromedaryContextBuilder.AddComponent<TService, TImplementation>(TImplementation implementation)
         {
             _service.Add(new ServiceDescriptor(typeof(TService), implementation));
             return this;
         }
 
-        IDromedaryBuilder IDromedaryBuilder.AddComponent<TService, TImplementation>(Func<IServiceProvider, TImplementation> implementation)
+        IDromedaryContextBuilder IDromedaryContextBuilder.AddComponent<TService, TImplementation>(Func<IServiceProvider, TImplementation> implementation)
         {
             _service.AddTransient<TService, TImplementation>(implementation);
             return this;
         }
 
-        IDromedaryBuilder IDromedaryBuilder.AddComponent<TService, TImplementation>(Func<IServiceProvider, TImplementation> implementation, ServiceLifetime lifetime)
+        IDromedaryContextBuilder IDromedaryContextBuilder.AddComponent<TService, TImplementation>(Func<IServiceProvider, TImplementation> implementation, ServiceLifetime lifetime)
         {
             _service.Add(new ServiceDescriptor(typeof(TService), implementation, lifetime));
             return this;
         }
 
-        IDromedaryBuilder IDromedaryBuilder.AddComponent(Type component)
+        IDromedaryContextBuilder IDromedaryContextBuilder.AddComponent(Type component)
         {
             _service.Add(new ServiceDescriptor(component, component));
             return this;
         }
 
-        IDromedaryBuilder IDromedaryBuilder.AddComponent(Type component, ServiceLifetime lifetime)
+        IDromedaryContextBuilder IDromedaryContextBuilder.AddComponent(Type component, ServiceLifetime lifetime)
         {
             _service.Add(new ServiceDescriptor(component, component, lifetime));
             return this;
         }
 
-        IDromedaryBuilder IDromedaryBuilder.AddComponent(Type component, Type implementation)
+        IDromedaryContextBuilder IDromedaryContextBuilder.AddComponent(Type component, Type implementation)
         {
             _service.Add(new ServiceDescriptor(component, implementation));
             return this;
         }
 
-        IDromedaryBuilder IDromedaryBuilder.AddComponent(Type component, Type implementation, ServiceLifetime lifetime)
+        IDromedaryContextBuilder IDromedaryContextBuilder.AddComponent(Type component, Type implementation, ServiceLifetime lifetime)
         {
             _service.Add(new ServiceDescriptor(component, implementation, lifetime));
             return this;
@@ -158,7 +158,7 @@ namespace Dromedary.Builder
 
         #endregion
         
-        IDromedaryContext IDromedaryBuilder.Build() 
+        IDromedaryContext IDromedaryContextBuilder.Build() 
             => new DefaultDromedaryContext(_id, _name, _version, _service.BuildServiceProvider());
     }
 }

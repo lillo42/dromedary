@@ -7,7 +7,7 @@ namespace Dromedary
 {
     public class DefaultDromedaryContext : IDromedaryContext
     {
-        private readonly List<IRoute> _routes = new List<IRoute>();
+        private readonly ICollection<IRoute> _routes = new List<IRoute>();
         public DefaultDromedaryContext(string id, 
             string name, 
             string version, 
@@ -23,7 +23,7 @@ namespace Dromedary
         public string Name { get; }
         public string Version { get; }
         public DateTime UpTime { get; } = DateTime.UtcNow;
-        public IReadOnlyCollection<IRoute> Routes => _routes;
+        public IEnumerable<IRoute> Routes => _routes;
         public IServiceProvider Service { get; }
         
         public void AddRoute(Action<IRouteBuilder> builder)
