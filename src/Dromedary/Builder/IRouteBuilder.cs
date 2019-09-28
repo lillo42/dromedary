@@ -20,7 +20,7 @@ namespace Dromedary.Builder
         IRouteBuilder From<T>(Action<T, IExchange> configure)
             where T : class, IDromedaryComponent;
         
-        IRouteBuilder From<T>(Action<IDromedaryComponent> configure, Type componentType);
+        IRouteBuilder From(Action<IDromedaryComponent> configure, Type componentType);
         
         IRouteBuilder From(Action<IDromedaryComponent, IExchange> configure, Type componentType);
 
@@ -30,7 +30,7 @@ namespace Dromedary.Builder
         IRouteBuilder From<T>(Func<T, IExchange, Task> configure)
             where T : class, IDromedaryComponent;
         
-        IRouteBuilder From<T>(Func<IDromedaryComponent, Task> configure, Type componentType);
+        IRouteBuilder From(Func<IDromedaryComponent, Task> configure, Type componentType);
 
         IRouteBuilder From(Func<IDromedaryComponent, IExchange,Task> configure, Type componentType);
         #endregion

@@ -58,12 +58,6 @@ namespace Dromedary.Test
         [Fact]
         public void AddRoute_Should_CreateRoute_When_ParameterIsNotNull()
         {
-            var resolver = Substitute.For<IResolverDromedaryContext>();
-            IDromedaryContext context = null;
-            resolver.Context = Arg.Do<IDromedaryContext>(arg => context = arg);
-
-            _provider.GetService(typeof(IResolverDromedaryContext))
-                .Returns(resolver);
 
             var builder = Substitute.For<IRouteBuilder>();
             _provider.GetService(typeof(IRouteBuilder))
@@ -78,9 +72,6 @@ namespace Dromedary.Test
             _context.Routes.Should().NotBeNull();
             _context.Routes.Should().NotBeNullOrEmpty();
             _context.Routes.Should().HaveCount(1);
-
-            context.Should().NotBeNull();
-            context.Should().Be(_context);
         }
     }
 }

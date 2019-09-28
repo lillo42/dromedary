@@ -23,8 +23,8 @@ namespace Dromedary.Builder
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _commandFactory = commandFactory ?? throw new ArgumentNullException(nameof(commandFactory));
-            _statementFactory = statementFactory;
-            _graphBuilder = graphBuilder;
+            _statementFactory = statementFactory ?? throw new ArgumentNullException(nameof(statementFactory));
+            _graphBuilder = graphBuilder ?? throw new ArgumentNullException(nameof(graphBuilder));
         }
 
         #region Configure
@@ -64,7 +64,7 @@ namespace Dromedary.Builder
             return this;
         }
 
-        public IRouteBuilder From<T>(Action<IDromedaryComponent> configure, Type componentType)
+        public IRouteBuilder From(Action<IDromedaryComponent> configure, Type componentType)
         {
             AddFrom(_commandFactory.CreateCommand(configure, componentType));
             return this;
@@ -90,7 +90,7 @@ namespace Dromedary.Builder
             return this;
         }
 
-        public IRouteBuilder From<T>(Func<IDromedaryComponent, Task> configure, Type componentType)
+        public IRouteBuilder From(Func<IDromedaryComponent, Task> configure, Type componentType)
         {
             AddFrom(_commandFactory.CreateCommand(configure, componentType));
             return this;

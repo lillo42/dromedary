@@ -1,6 +1,6 @@
 using System;
 
-namespace Dromedary.IdGenerator
+namespace Dromedary.Generator
 {
     public class DefaultIdGenerator : IExchangeIdGenerator, IMessageIdGenerator
     {

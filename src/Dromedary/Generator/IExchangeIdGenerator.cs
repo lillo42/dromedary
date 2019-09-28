@@ -1,4 +1,4 @@
-namespace Dromedary.IdGenerator
+namespace Dromedary.Generator
 {
     public interface IExchangeIdGenerator
     {

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using AutoFixture;
 using Dromedary.Builder;
 using FluentAssertions;
@@ -6,15 +7,15 @@ using Xunit;
 
 namespace Dromedary.Test.Builder
 {
-    public class DromedaryBuilderTest
+    public class DefaultDromedaryBuilderTest
     {
         private readonly Fixture _fixture;
         private readonly IDromedaryContextBuilder _contextBuilder;
 
-        public DromedaryBuilderTest()
+        public DefaultDromedaryBuilderTest()
         {
             _fixture = new Fixture();
-            _contextBuilder = new DromedaryContextBuilder();
+            _contextBuilder = new DefaultDromedaryContextBuilder();
         }
 
         [Fact]
@@ -121,6 +122,30 @@ namespace Dromedary.Test.Builder
             
             context.Service.Should().NotBeNull();
             context.UpTime.Should().BeLessThan(TimeSpan.FromSeconds(1));
+        }
+        
+        private interface IFakeComponent : IDromedaryComponent
+        {
+            
+        }
+        
+        private class FakeComponent : IFakeComponent
+        {
+            public FakeComponent(IDromedaryContext context)
+            {
+                Context = context;
+            }
+
+            public IDromedaryContext Context { get; }
+            public IEndpoint CreateEndpoint(string uri)
+            {
+                throw new NotImplementedException();
+            }
+
+            public IEndpoint CreateEndpoint(string uri, IDictionary<string, object> parameters)
+            {
+                throw new NotImplementedException();
+            }
         }
     }
 }

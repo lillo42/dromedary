@@ -7,7 +7,6 @@ namespace Dromedary.Builder
     public interface IDromedaryContextBuilder
     {
         IServiceCollection Service { get; }
-        IDromedaryContextBuilder AddLogging(Action<ILoggingBuilder> configure);
 
         #region Set
         IDromedaryContextBuilder SetId(string id);
@@ -58,7 +57,11 @@ namespace Dromedary.Builder
         IDromedaryContextBuilder AddComponent(Type component, Type implementation, ServiceLifetime lifetime);
         
         #endregion
+
+        IDromedaryContextBuilder AddRoute(Action<IRouteBuilder> builder);
         
         IDromedaryContext Build();
+        
+        IDromedaryContext Build(IServiceProvider provider);
     }
 }

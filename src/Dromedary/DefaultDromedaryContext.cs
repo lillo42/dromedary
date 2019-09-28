@@ -1,11 +1,14 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using Dromedary.Builder;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace Dromedary
 {
-    public class DefaultDromedaryContext : IDromedaryContext
+    public class DefaultDromedaryContext :  BackgroundService, IDromedaryContext
     {
         private readonly ICollection<IRoute> _routes = new List<IRoute>();
         public DefaultDromedaryContext(string id, 
@@ -25,7 +28,7 @@ namespace Dromedary
         public DateTime UpTime { get; } = DateTime.UtcNow;
         public IEnumerable<IRoute> Routes => _routes;
         public IServiceProvider Service { get; }
-        
+
         public void AddRoute(Action<IRouteBuilder> builder)
         {
             if (builder == null)
@@ -34,13 +37,19 @@ namespace Dromedary
             }
             
             using var scope = Service.CreateScope();
-            var set = scope.ServiceProvider.GetRequiredService<IResolverDromedaryContext>();
-            set.Context = this;
             
             var routeBuilder = scope.ServiceProvider.GetRequiredService<IRouteBuilder>();
             builder(routeBuilder);
                 
             _routes.Add(routeBuilder.Build());
+        }
+
+        Task IDromedaryContext.ExecuteAsync(CancellationToken stoppingToken) 
+            => ExecuteAsync(stoppingToken);
+
+        protected override Task ExecuteAsync(CancellationToken stoppingToken)
+        {
+            throw new NotImplementedException();
         }
     }
 }
