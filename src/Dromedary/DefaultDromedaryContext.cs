@@ -47,9 +47,23 @@ namespace Dromedary
         Task IDromedaryContext.ExecuteAsync(CancellationToken stoppingToken) 
             => ExecuteAsync(stoppingToken);
 
-        protected override Task ExecuteAsync(CancellationToken stoppingToken)
+        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            throw new NotImplementedException();
+            var tasks = new Task[_routes.Count];
+            int i = 0;
+            foreach (var route in _routes)
+            {
+                tasks[i++] = ExecuteRouteAsync(Service, route, stoppingToken);
+            }
+
+            await Task.WhenAll(tasks);
+        }
+
+        private static async Task ExecuteRouteAsync(IServiceProvider provider, IRoute route, CancellationToken stopCancellationToken)
+        {
+            using var scope = provider.CreateScope();
+            await route.ExecuteAsync(scope.ServiceProvider, stopCancellationToken)
+                .ConfigureAwait(false);
         }
     }
 }

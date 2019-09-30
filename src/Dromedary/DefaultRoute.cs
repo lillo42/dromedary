@@ -1,6 +1,8 @@
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Dromedary
 {
@@ -18,15 +20,25 @@ namespace Dromedary
         public string Description { get; }
         public IRouteGraph RouteGraph { get; }
         public IDromedaryContext Context { get; }
-
-        public ValueTask ExecuteAsync(CancellationToken cancellationToken)
+        
+        public async Task ExecuteAsync(IServiceProvider service, CancellationToken cancellationToken = default)
         {
-            throw new System.NotImplementedException();
+            var @from = RouteGraph.Root.First();
+            var command = from.Statement.Command;
+
+            var component = (IDromedaryComponent)service.GetRequiredService(command.ComponentType);
+
+            if (await command.CanExecuteAsync(null, component, cancellationToken)
+                .ConfigureAwait(false))
+            {
+                await command.ExecuteAsync(null, component, cancellationToken)
+                    .ConfigureAwait(false);
+            }
         }
 
         public void Dispose()
         {
-            throw new System.NotImplementedException();
+        
         }
     }
 }

@@ -11,6 +11,6 @@ namespace Dromedary
         IRouteGraph RouteGraph { get; }
         IDromedaryContext Context { get; }
 
-        ValueTask ExecuteAsync(CancellationToken cancellationToken);
+        Task ExecuteAsync(IServiceProvider service, CancellationToken cancellationToken = default);
     }
 }

@@ -137,12 +137,7 @@ namespace Dromedary.Test.Builder
             }
 
             public IDromedaryContext Context { get; }
-            public IEndpoint CreateEndpoint(string uri)
-            {
-                throw new NotImplementedException();
-            }
-
-            public IEndpoint CreateEndpoint(string uri, IDictionary<string, object> parameters)
+            public IEndpoint CreateEndpoint()
             {
                 throw new NotImplementedException();
             }

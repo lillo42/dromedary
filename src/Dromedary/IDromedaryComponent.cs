@@ -5,7 +5,12 @@ namespace Dromedary
     public interface IDromedaryComponent
     {
         IDromedaryContext Context { get; }
-        IEndpoint CreateEndpoint(string uri);
-        IEndpoint CreateEndpoint(string uri, IDictionary<string, object> parameters);
+        IEndpoint CreateEndpoint();
+    }
+
+    public interface IDromedaryComponent<T> : IDromedaryComponent
+        where T : IEndpoint
+    {
+        new T CreateEndpoint();
     }
 }
