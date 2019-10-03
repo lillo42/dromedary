@@ -4,6 +4,6 @@ namespace Dromedary
 {
     public interface IRouteGraph
     {
-        IReadOnlyCollection<IRouteNode> Root { get; }
+        IRouteNode Root { get; }
     }
 }

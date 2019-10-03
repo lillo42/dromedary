@@ -102,8 +102,8 @@ namespace Dromedary.Builder
             return this;
         }
 
-        private void AddFrom(ICommand command) 
-            => _graphBuilder.Add(_statementFactory.Create(command, Statement.From));
+        private void AddFrom(IConfigureComponent configureComponent) 
+            => _graphBuilder.Add(_statementFactory.Create(configureComponent, Statement.From));
 
         #endregion
 
@@ -154,9 +154,9 @@ namespace Dromedary.Builder
             return this;
         }
         
-        private void AddTo(ICommand command)
+        private void AddTo(IConfigureComponent configureComponent)
         {
-            var statement = _statementFactory.Create(command, Statement.To);
+            var statement = _statementFactory.Create(configureComponent, Statement.To);
             _graphBuilder.Add(statement);
         }
 

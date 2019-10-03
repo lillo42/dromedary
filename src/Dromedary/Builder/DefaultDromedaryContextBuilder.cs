@@ -41,6 +41,9 @@ namespace Dromedary.Builder
             Service.TryAddSingleton<IRouteNodeFactory, DefaultRouteNodeFactory>();
             Service.TryAddTransient<IRouteGraphBuilder, DefaultRouteGraphBuilder>();
             
+            Service.TryAddScoped<IChannelFactory, DefaultChannelFactory>();
+            
+            
             Service.TryAddTransient<IRouteBuilder, DefaultRouteBuilder>();
         }
 

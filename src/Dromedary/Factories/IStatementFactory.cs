@@ -5,7 +5,7 @@ namespace Dromedary.Factories
 {
     public interface IStatementFactory
     {
-        IStatement Create(ICommand command, Statement statement);
+        IStatement Create(IConfigureComponent configureComponent, Statement statement);
     }
 }
 

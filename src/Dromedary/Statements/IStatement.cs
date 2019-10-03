@@ -4,7 +4,7 @@ namespace Dromedary.Statements
 {
     public interface IStatement
     {
-        ICommand Command { get; }
+        IConfigureComponent ConfigureComponent { get; }
         Statement Statement { get; }
     }
     

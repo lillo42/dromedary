@@ -4,13 +4,13 @@ namespace Dromedary.Statements
 {
     public class DefaultStatement : IStatement
     {
-        public DefaultStatement(ICommand command, Statement statement)
+        public DefaultStatement(IConfigureComponent configureComponent, Statement statement)
         {
-            Command = command;
+            ConfigureComponent = configureComponent;
             Statement = statement;
         }
 
-        public ICommand Command { get; }
+        public IConfigureComponent ConfigureComponent { get; }
         public Statement Statement { get; }
     }
 }

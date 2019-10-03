@@ -1,7 +1,9 @@
 using System;
 using System.Linq;
 using System.Threading;
+using System.Threading.Channels;
 using System.Threading.Tasks;
+using Dromedary.Factories;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Dromedary
@@ -23,16 +25,51 @@ namespace Dromedary
         
         public async Task ExecuteAsync(IServiceProvider service, CancellationToken cancellationToken = default)
         {
-            var @from = RouteGraph.Root.First();
-            var command = from.Statement.Command;
+            var @from = RouteGraph.Root;
+            var configure = from.Statement.ConfigureComponent;
 
-            var component = (IDromedaryComponent)service.GetRequiredService(command.ComponentType);
+            var component = (IDromedaryComponent)service.GetRequiredService(configure.ComponentType);
+            configure.Configure(null, component);
 
-            if (await command.CanExecuteAsync(null, component, cancellationToken)
-                .ConfigureAwait(false))
+            var producer = component.CreateEndpoint()
+                .CreateProducer();
+
+            var channel = Channel.CreateUnbounded<IExchange>();
+            var producerTask = producer.ExecuteAsync(channel.Writer, cancellationToken);
+            var consumer = ConsumeAsync(service, channel, cancellationToken);
+
+            await Task.WhenAll(producerTask, consumer);
+        }
+
+
+        private async Task ConsumeAsync(IServiceProvider service, ChannelReader<IExchange> reader, CancellationToken cancellationToken)
+        {
+            while (await reader.WaitToReadAsync(cancellationToken) & !cancellationToken.IsCancellationRequested)
             {
-                await command.ExecuteAsync(null, component, cancellationToken)
-                    .ConfigureAwait(false);
+                if (reader.TryRead(out var exchange))
+                {
+                    using (var scope = service.CreateScope())
+                    {
+                        try
+                        {
+                            var factory = scope.ServiceProvider.GetRequiredService<IChannelFactory>();
+                            var channel = factory.Create(RouteGraph);
+                            foreach (var process in channel)
+                            {
+                                await process.ExecuteAsync(exchange, cancellationToken);
+                            
+                                if (cancellationToken.IsCancellationRequested)
+                                {
+                                    break;
+                                }
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            
+                        }
+                    }
+                }
             }
         }
 

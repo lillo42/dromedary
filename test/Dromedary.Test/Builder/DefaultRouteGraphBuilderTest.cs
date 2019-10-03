@@ -45,9 +45,7 @@ namespace Dromedary.Test.Builder
 
             graph.Should().NotBeNull();
             graph.Root.Should().NotBeNull();
-            graph.Root.Should().NotBeEmpty();
-            graph.Root.Should().HaveCount(1);
-            graph.Root.Should().HaveElementAt(0, from);
+            graph.Root.Should().Be(from);
 
             _factory
                 .Received(1)
@@ -96,8 +94,6 @@ namespace Dromedary.Test.Builder
             
             graph.Should().NotBeNull();
             graph.Root.Should().NotBeNull();
-            graph.Root.Should().NotBeEmpty();
-            graph.Root.Should().HaveCount(1);
             
             _factory
                 .Received(1)

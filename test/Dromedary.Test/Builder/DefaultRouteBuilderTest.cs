@@ -122,7 +122,7 @@ namespace Dromedary.Test.Builder
         [Fact]
         public void From_Should_AddFrom_When_CallFromAction()
         {
-            var command = Substitute.For<ICommand<IFakeComponent>>();
+            var command = Substitute.For<IConfigureComponent<IFakeComponent>>();
             _commandFactory.CreateCommand(Arg.Any<Action<IFakeComponent>>())
                 .Returns(command);
 
@@ -157,7 +157,7 @@ namespace Dromedary.Test.Builder
         [Fact]
         public void From_Should_AddFrom_When_CallFromActionWithExchange()
         {
-            var command = Substitute.For<ICommand<IFakeComponent>>();
+            var command = Substitute.For<IConfigureComponent<IFakeComponent>>();
             _commandFactory.CreateCommand(Arg.Any<Action<IFakeComponent, IExchange>>())
                 .Returns(command);
 
@@ -192,7 +192,7 @@ namespace Dromedary.Test.Builder
         [Fact]
         public void From_Should_AddFrom_When_CallFromActionWithType()
         {
-            var command = Substitute.For<ICommand>();
+            var command = Substitute.For<IConfigureComponent>();
             _commandFactory.CreateCommand(Arg.Any<Action<IDromedaryComponent>>(), typeof(IFakeComponent))
                 .Returns(command);
 
@@ -225,7 +225,7 @@ namespace Dromedary.Test.Builder
         [Fact]
         public void From_Should_AddFrom_When_CallFromActionWithExchangeAndType()
         {
-            var command = Substitute.For<ICommand>();
+            var command = Substitute.For<IConfigureComponent>();
             _commandFactory.CreateCommand(Arg.Any<Action<IDromedaryComponent, IExchange>>(), typeof(IFakeComponent))
                 .Returns(command);
 
@@ -258,7 +258,7 @@ namespace Dromedary.Test.Builder
         [Fact]
         public void From_Should_AddFrom_When_CallFromFunc()
         {
-            var command = Substitute.For<ICommand<IFakeComponent>>();
+            var command = Substitute.For<IConfigureComponent<IFakeComponent>>();
             _commandFactory.CreateCommand(Arg.Any<Func<IFakeComponent, Task>>())
                 .Returns(command);
 

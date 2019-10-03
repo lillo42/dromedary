@@ -4,19 +4,19 @@ using System.Threading.Tasks;
 
 namespace Dromedary.Commands
 {
-    public  class DefaultCommand : ICommand
+    public  class DefaultConfigureComponent : IConfigureComponent
     {
         private readonly Action<IDromedaryComponent> _configure;
         private readonly Action<IDromedaryComponent, IExchange> _configureWithExchange;
         
-        public DefaultCommand(Type componentType, Action<IDromedaryComponent> configure)
+        public DefaultConfigureComponent(Type componentType, Action<IDromedaryComponent> configure)
         {
             ComponentType = componentType ?? throw new ArgumentNullException(nameof(componentType));
             _configure = configure ?? throw new ArgumentNullException(nameof(configure));
             _configureWithExchange = null;
         }
         
-        public DefaultCommand(Type componentType, Action<IDromedaryComponent, IExchange> configure)
+        public DefaultConfigureComponent(Type componentType, Action<IDromedaryComponent, IExchange> configure)
         {
             ComponentType = componentType ?? throw new ArgumentNullException(nameof(componentType));
             _configureWithExchange = configure ?? throw new ArgumentNullException(nameof(configure));
@@ -25,56 +25,7 @@ namespace Dromedary.Commands
 
         public Type ComponentType { get; }
 
-        public ValueTask<bool> CanExecuteAsync(IExchange exchange, IDromedaryComponent component, CancellationToken cancellationToken = default)
-            => new ValueTask<bool>(true);
-
-        public ValueTask ExecuteAsync(IExchange exchange, IDromedaryComponent component, CancellationToken cancellationToken = default)
-        {
-            if (_configure != null)
-            {
-                _configure.Invoke(component);    
-            }
-            else
-            {
-                _configureWithExchange.Invoke(component, exchange);
-            }
-            
-            return new ValueTask();
-        }
-    }
-    
-    public  class DefaultCommand<T> : ICommand<T>
-        where T : class, IDromedaryComponent
-    {
-        private readonly Action<T> _configure;
-        private readonly Action<T, IExchange> _configureWithExchange;
-        
-        public DefaultCommand(Action<T> configure)
-        {
-            _configure = configure ?? throw new ArgumentNullException(nameof(configure));
-            _configureWithExchange = null;
-        }
-        
-        public DefaultCommand(Action<T, IExchange> configure)
-        {
-            _configureWithExchange = configure ?? throw new ArgumentNullException(nameof(configure));
-            _configure = null;
-        }
-
-        public Type ComponentType => typeof(T);
-
-        public ValueTask<bool> CanExecuteAsync(IExchange exchange, IDromedaryComponent component,
-            CancellationToken cancellationToken = default) 
-            => CanExecuteAsync(exchange, (T)component, cancellationToken);
-
-        public ValueTask ExecuteAsync(IExchange exchange, IDromedaryComponent component,
-            CancellationToken cancellationToken = default) 
-            => ExecuteAsync(exchange, (T)component, cancellationToken);
-
-        public ValueTask<bool> CanExecuteAsync(IExchange exchange, T component, CancellationToken cancellationToken = default)
-            => new ValueTask<bool>(true);
-
-        public ValueTask ExecuteAsync(IExchange exchange, T component, CancellationToken cancellationToken = default)
+        public void Configure(IExchange exchange, IDromedaryComponent component)
         {
             if (_configure != null)
             {
@@ -84,8 +35,42 @@ namespace Dromedary.Commands
             {
                 _configureWithExchange.Invoke(component, exchange);
             }
+        }
+    }
+    
+    public  class DefaultConfigureComponent<T> : IConfigureComponent<T>
+        where T : class, IDromedaryComponent
+    {
+        private readonly Action<T> _configure;
+        private readonly Action<T, IExchange> _configureWithExchange;
+        
+        public DefaultConfigureComponent(Action<T> configure)
+        {
+            _configure = configure ?? throw new ArgumentNullException(nameof(configure));
+            _configureWithExchange = null;
+        }
+        
+        public DefaultConfigureComponent(Action<T, IExchange> configure)
+        {
+            _configureWithExchange = configure ?? throw new ArgumentNullException(nameof(configure));
+            _configure = null;
+        }
 
-            return new ValueTask();
+        public Type ComponentType => typeof(T);
+
+        public void Configure(IExchange exchange, IDromedaryComponent component) 
+            => Configure(exchange, (T)component);
+
+        public void Configure(IExchange exchange, T component)
+        {
+            if (_configure != null)
+            {
+                _configure.Invoke(component);
+            }
+            else
+            {
+                _configureWithExchange.Invoke(component, exchange);
+            }
         }
     }
 }

@@ -5,11 +5,11 @@ namespace Dromedary
 {
     public class DefaultRouteGraph : IRouteGraph
     {
-        public DefaultRouteGraph(IReadOnlyCollection<IRouteNode> root)
+        public DefaultRouteGraph(IRouteNode root)
         {
             Root = root ?? throw new ArgumentNullException(nameof(root));
         }
 
-        public IReadOnlyCollection<IRouteNode> Root { get; }
+        public IRouteNode Root { get; }
     }
 }

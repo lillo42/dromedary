@@ -6,20 +6,20 @@ namespace Dromedary.Factories
 {
     public interface ICommandFactory
     {
-        ICommand CreateCommand(Action<IDromedaryComponent> configure, Type componentType);
-        ICommand CreateCommand(Action<IDromedaryComponent, IExchange> configure, Type componentType);
+        IConfigureComponent CreateCommand(Action<IDromedaryComponent> configure, Type componentType);
+        IConfigureComponent CreateCommand(Action<IDromedaryComponent, IExchange> configure, Type componentType);
         
-        ICommand<T> CreateCommand<T>(Action<T> configure)
+        IConfigureComponent<T> CreateCommand<T>(Action<T> configure)
             where T : class, IDromedaryComponent;
-        ICommand<T> CreateCommand<T>(Action<T, IExchange> configure)
+        IConfigureComponent<T> CreateCommand<T>(Action<T, IExchange> configure)
             where T : class, IDromedaryComponent;
         
-        ICommand CreateCommand(Func<IDromedaryComponent, Task> configure, Type componentType);
-        ICommand CreateCommand(Func<IDromedaryComponent, IExchange, Task> configure, Type componentType);
+        IConfigureComponent CreateCommand(Func<IDromedaryComponent, Task> configure, Type componentType);
+        IConfigureComponent CreateCommand(Func<IDromedaryComponent, IExchange, Task> configure, Type componentType);
         
-        ICommand<T> CreateCommand<T>(Func<T, Task> configure)
+        IConfigureComponent<T> CreateCommand<T>(Func<T, Task> configure)
             where T : class, IDromedaryComponent;
-        ICommand<T> CreateCommand<T>(Func<T, IExchange, Task> configure)
+        IConfigureComponent<T> CreateCommand<T>(Func<T, IExchange, Task> configure)
             where T : class, IDromedaryComponent;
     }
 }

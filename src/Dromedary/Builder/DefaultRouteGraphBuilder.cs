@@ -47,6 +47,6 @@ namespace Dromedary.Builder
         }
 
         public virtual IRouteGraph Build() 
-            => new DefaultRouteGraph(new []{ _root });
+            => new DefaultRouteGraph(_root);
     }
 }
