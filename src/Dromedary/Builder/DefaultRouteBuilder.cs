@@ -169,6 +169,20 @@ namespace Dromedary.Builder
 
         #endregion
         
+        #region Process
+        public IRouteBuilder Process(string uri)
+            => throw new NotImplementedException();
+        public IRouteBuilder Process<T>()
+            where T : IProcessor
+            => throw new NotImplementedException();
+        public IRouteBuilder Process(Type process)
+            => throw new NotImplementedException();
+        public IProcessor Processor(Action<IExchange> process)
+            => throw new NotImplementedException();
+        public IProcessor Processor(Func<IExchange, Task> process)
+            => throw new NotImplementedException();
+        #endregion
+        
         #region Build
 
         public IRoute Build() 

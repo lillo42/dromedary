@@ -9,7 +9,7 @@ namespace Dromedary
 {
     public class DefaultChannel : IChannel
     {
-        private readonly IServiceProvider service;
+        private readonly IServiceProvider _service;
         private readonly IRouteGraph _graph;
         private readonly IExchange _exchange;
         private IRouteNode _currentNode;
@@ -18,7 +18,7 @@ namespace Dromedary
         {
             _graph = graph ?? throw new ArgumentNullException(nameof(graph));
             _exchange = exchange;
-            this.service = service;
+            this._service = service;
             _currentNode =  _graph.Root;
         }
 
@@ -44,7 +44,7 @@ namespace Dromedary
             
             var configure = _currentNode.Statement.ConfigureComponent;
              
-            var component = (IDromedaryComponent)service.GetRequiredService(configure.ComponentType);
+            var component = (IDromedaryComponent)_service.GetRequiredService(configure.ComponentType);
             configure.Configure(_exchange, component);
             Current = component.CreateEndpoint()
                 .CreateConsumer()

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Dromedary.Statements;
 
@@ -9,7 +10,7 @@ namespace Dromedary
         
         public DefaultRouteNode(IStatement statement)
         {
-            Statement = statement;
+            Statement = statement ?? throw new ArgumentNullException(nameof(statement));
             _children = new List<IRouteNode>();
         }
 

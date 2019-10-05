@@ -39,7 +39,7 @@ namespace Dromedary.Builder
             
             Service.TryAddScoped<IChannelFactory, DefaultChannelFactory>();
             Service.TryAddScoped<IExchangeResolver, DefaultExchangeResolver>();
-            Service.TryAddScoped<IExchange>(provider => provider.GetRequiredService<IExchangeResolver>().Exchange);
+            Service.TryAddScoped(provider => provider.GetRequiredService<IExchangeResolver>().Exchange);
             
             
             Service.TryAddTransient<IRouteBuilder, DefaultRouteBuilder>();
@@ -183,6 +183,5 @@ namespace Dromedary.Builder
             => new DefaultDromedaryContext(_id, _name, _version, provider);
 
         #endregion
-        
     }
 }

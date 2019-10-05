@@ -58,6 +58,15 @@ namespace Dromedary.Builder
         IRouteBuilder To(Func<IDromedaryComponent, IExchange, Task> configure, Type componentType);
         #endregion
 
+        #region Process
+        IRouteBuilder Process(string uri);
+        IRouteBuilder Process<T>()
+            where T : IProcessor;
+        IRouteBuilder Process(Type process);
+        IProcessor Processor(Action<IExchange> process);
+        IProcessor Processor(Func<IExchange, Task> process);
+        #endregion
+
         #region Build
         IRoute Build();
         #endregion

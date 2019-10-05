@@ -3,6 +3,7 @@ namespace Dromedary.Statements
     public enum Statement
     {
         From,
-        To
+        To,
+        Process
     }
 }

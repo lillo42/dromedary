@@ -10,6 +10,5 @@
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <IncludeSymbols>true</IncludeSymbols>
-    <LangVersion>preview</LangVersion>
   </PropertyGroup>
 </Project>
