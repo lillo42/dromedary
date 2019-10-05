@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
@@ -34,11 +33,20 @@ namespace Dromedary
             var producer = component.CreateEndpoint()
                 .CreateProducer();
 
-            var channel = Channel.CreateUnbounded<IExchange>();
-            var producerTask = producer.ExecuteAsync(channel.Writer, cancellationToken);
-            var consumer = ConsumeAsync(service, channel, cancellationToken);
+            var channel = Channel.CreateUnbounded<IExchange>(new UnboundedChannelOptions
+            {
+                SingleWriter = true,
+                SingleReader = false
+            });
+            
+            var consumer = ConsumeAsync(service, channel, cancellationToken)
+                .ConfigureAwait(false);
+            
+            var producerTask = producer.ExecuteAsync(channel.Writer, cancellationToken)
+                .ConfigureAwait(false);
 
-            await Task.WhenAll(producerTask, consumer);
+            await producerTask;
+            await consumer;
         }
 
 
@@ -52,6 +60,8 @@ namespace Dromedary
                     {
                         try
                         {
+                            var resolver = scope.ServiceProvider.GetRequiredService<IExchangeResolver>();
+                            resolver.Exchange = exchange;
                             var factory = scope.ServiceProvider.GetRequiredService<IChannelFactory>();
                             var channel = factory.Create(RouteGraph);
                             foreach (var process in channel)

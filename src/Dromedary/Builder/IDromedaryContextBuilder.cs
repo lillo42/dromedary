@@ -1,12 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 
 namespace Dromedary.Builder
 {
     public interface IDromedaryContextBuilder
     {
         IServiceCollection Service { get; }
+        
+        IEnumerable<Action<IRouteBuilder>> RoutesBuilder { get; }
 
         #region Set
         IDromedaryContextBuilder SetId(string id);
@@ -14,7 +16,6 @@ namespace Dromedary.Builder
         IDromedaryContextBuilder SetVersion(string version);
         #endregion
         
-
         #region Component
 
         IDromedaryContextBuilder AddComponent<TService>()

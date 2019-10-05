@@ -14,9 +14,18 @@ namespace Microsoft.Extensions.Hosting
             {
                 var builder = new DefaultDromedaryContextBuilder(service);
                 config(builder);
-                service.TryAddSingleton(provider => builder.Build(provider));
+                service.TryAddSingleton(provider =>  builder.Build(provider));
+                service.AddHostedService(provider =>
+                {
+                    var context = provider.GetRequiredService<IDromedaryContext>();
 
-                service.AddHostedService(provider => provider.GetRequiredService<IDromedaryContext>());
+                    foreach (var router in builder.RoutesBuilder)
+                    {
+                        context.AddRoute(router);
+                    }
+
+                    return context;
+                });
             });
         }
     }

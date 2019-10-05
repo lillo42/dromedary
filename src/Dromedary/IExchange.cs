@@ -10,7 +10,7 @@ namespace Dromedary
         IDromedaryContext Context { get; }
         
         IDictionary<string, object> Properties { get; set; }
-        
+        IMessage Message { get; set; }
         bool HasProperties { get; }
         
         Exception Exception { get; set; }

@@ -14,6 +14,7 @@ namespace Dromedary
         public virtual  string Id { get; }
         public virtual IDromedaryContext Context { get; }
         public virtual IDictionary<string, object> Properties { get; set; } = new Dictionary<string, object>();
+        public virtual IMessage Message { get; set; }
         public virtual bool HasProperties => Properties.Count > 0;
         public virtual Exception Exception { get; set; }
         public virtual bool IsFailed => Exception != null;

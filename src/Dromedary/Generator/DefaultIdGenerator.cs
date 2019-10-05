@@ -4,10 +4,10 @@ namespace Dromedary.Generator
 {
     public class DefaultIdGenerator : IExchangeIdGenerator, IMessageIdGenerator
     {
-        public string Generate(IRoute route) 
+        public string Generate() 
             => Guid.NewGuid().ToString();
 
-        public string Generate(IRoute route, IExchange exchange) 
+        public string Generate(IExchange exchange) 
             => Guid.NewGuid().ToString();
     }
 }

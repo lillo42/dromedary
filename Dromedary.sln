@@ -13,6 +13,17 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dromedary.Test", "test\Drom
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dromedary.Acceptance.Test", "test\Dromedary.Acceptance.Test\Dromedary.Acceptance.Test.csproj", "{4EB901C7-C68F-4B28-BBB8-2D145F457C17}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Itens", "Solution Itens", "{AAC4B61E-D2B4-43D8-9BE3-89DF4757FE12}"
+	ProjectSection(SolutionItems) = preProject
+		Directory.Build.props = Directory.Build.props
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Components", "Components", "{9684322C-E496-476C-850C-F2563452EB9E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dromedary.Component.Console", "src\Components\Dromedary.Component.Console\Dromedary.Component.Console.csproj", "{29743D84-0876-43F2-B06F-D949A5C7A962}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sample", "sample", "{31E7F77E-C377-46D1-94D7-41188D08D88B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -62,10 +73,24 @@ Global
 		{4EB901C7-C68F-4B28-BBB8-2D145F457C17}.Release|x64.Build.0 = Release|Any CPU
 		{4EB901C7-C68F-4B28-BBB8-2D145F457C17}.Release|x86.ActiveCfg = Release|Any CPU
 		{4EB901C7-C68F-4B28-BBB8-2D145F457C17}.Release|x86.Build.0 = Release|Any CPU
+		{29743D84-0876-43F2-B06F-D949A5C7A962}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{29743D84-0876-43F2-B06F-D949A5C7A962}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{29743D84-0876-43F2-B06F-D949A5C7A962}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{29743D84-0876-43F2-B06F-D949A5C7A962}.Debug|x64.Build.0 = Debug|Any CPU
+		{29743D84-0876-43F2-B06F-D949A5C7A962}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{29743D84-0876-43F2-B06F-D949A5C7A962}.Debug|x86.Build.0 = Debug|Any CPU
+		{29743D84-0876-43F2-B06F-D949A5C7A962}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{29743D84-0876-43F2-B06F-D949A5C7A962}.Release|Any CPU.Build.0 = Release|Any CPU
+		{29743D84-0876-43F2-B06F-D949A5C7A962}.Release|x64.ActiveCfg = Release|Any CPU
+		{29743D84-0876-43F2-B06F-D949A5C7A962}.Release|x64.Build.0 = Release|Any CPU
+		{29743D84-0876-43F2-B06F-D949A5C7A962}.Release|x86.ActiveCfg = Release|Any CPU
+		{29743D84-0876-43F2-B06F-D949A5C7A962}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{BB9A7EA6-77E4-4C09-8582-16A015230343} = {BDB2D447-2341-456B-8962-E78E8FA6DD97}
 		{199CFB88-056A-4F65-AE21-9A5C18940D0B} = {C99A1A4F-5F72-4E57-9EBB-E1F93F1152B5}
 		{4EB901C7-C68F-4B28-BBB8-2D145F457C17} = {C99A1A4F-5F72-4E57-9EBB-E1F93F1152B5}
+		{9684322C-E496-476C-850C-F2563452EB9E} = {BDB2D447-2341-456B-8962-E78E8FA6DD97}
+		{29743D84-0876-43F2-B06F-D949A5C7A962} = {9684322C-E496-476C-850C-F2563452EB9E}
 	EndGlobalSection
 EndGlobal

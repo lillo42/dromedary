@@ -3,16 +3,13 @@ using System.Collections.Generic;
 using Dromedary.Activator;
 using Dromedary.Factories;
 using Dromedary.Generator;
-using Dromedary.Logging;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Logging;
 
 namespace Dromedary.Builder
 {
     public class DefaultDromedaryContextBuilder : IDromedaryContextBuilder
     {
-        private readonly ILoggingBuilder _builder;
         private readonly ICollection<Action<IRouteBuilder>> _routes = new List<Action<IRouteBuilder>>();
 
         private string _id = Guid.NewGuid().ToString();
@@ -28,7 +25,6 @@ namespace Dromedary.Builder
         public DefaultDromedaryContextBuilder(IServiceCollection service)
         {
             Service = service;
-            _builder = new LoggingBuilder(service);
             
             Service.TryAddSingleton<IActivator, DefaultActivator>();
             Service.TryAddSingleton<IExchangeIdGenerator, DefaultIdGenerator>();
@@ -42,13 +38,16 @@ namespace Dromedary.Builder
             Service.TryAddTransient<IRouteGraphBuilder, DefaultRouteGraphBuilder>();
             
             Service.TryAddScoped<IChannelFactory, DefaultChannelFactory>();
+            Service.TryAddScoped<IExchangeResolver, DefaultExchangeResolver>();
+            Service.TryAddScoped<IExchange>(provider => provider.GetRequiredService<IExchangeResolver>().Exchange);
             
             
             Service.TryAddTransient<IRouteBuilder, DefaultRouteBuilder>();
         }
 
         public IServiceCollection Service { get; }
-        
+        public IEnumerable<Action<IRouteBuilder>> RoutesBuilder => _routes;
+
         #region Set
 
         public IDromedaryContextBuilder SetId(string id)
@@ -180,16 +179,8 @@ namespace Dromedary.Builder
             return Service.BuildServiceProvider().GetRequiredService<IDromedaryContext>();
         }
 
-        public IDromedaryContext Build(IServiceProvider provider)
-        {
-            var context =  new DefaultDromedaryContext(_id, _name, _version, provider);
-            foreach (var route in _routes)
-            {
-                context.AddRoute(route);
-            }
-
-            return context;
-        }
+        public IDromedaryContext Build(IServiceProvider provider) 
+            => new DefaultDromedaryContext(_id, _name, _version, provider);
 
         #endregion
         

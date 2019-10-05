@@ -37,6 +37,9 @@ namespace Dromedary.Builder
 
         #region To
         IRouteBuilder To(string uri);
+
+        IRouteBuilder To<T>()
+            where T : class, IDromedaryComponent;
         
         IRouteBuilder To<T>(Action<T> configure)
             where T : class, IDromedaryComponent;

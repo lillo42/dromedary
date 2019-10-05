@@ -114,6 +114,13 @@ namespace Dromedary.Builder
             throw new NotImplementedException();
         }
 
+        public IRouteBuilder To<T>()
+            where T : class, IDromedaryComponent
+        {
+            AddTo(_commandFactory.CreateCommand<T>(_ => { }));
+            return this;
+        }
+
         public IRouteBuilder To<T>(Action<T> configure) 
             where T : class, IDromedaryComponent
         {
