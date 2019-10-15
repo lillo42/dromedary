@@ -291,6 +291,10 @@ paket-files/
 .idea/
 *.sln.iml
 
+# VS Code
+.vscode/
+.devcontainer/
+
 # CodeRush
 .cr/
 

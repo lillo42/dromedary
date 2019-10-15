@@ -13,6 +13,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dromedary.Test", "test\Drom
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dromedary.Acceptance.Test", "test\Dromedary.Acceptance.Test\Dromedary.Acceptance.Test.csproj", "{4EB901C7-C68F-4B28-BBB8-2D145F457C17}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Itens", "Solution Itens", "{4C2931CB-955E-4540-83A7-73ECAD70CED9}"
+ProjectSection(SolutionItems) = preProject
+	Directory.Build.props = Directory.Build.props
+EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
