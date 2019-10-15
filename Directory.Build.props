@@ -1,7 +1,7 @@
 <Project>
   <PropertyGroup>
-    <DromedaryAppTargetFrameworks Condition="$(ThingAppTargetFrameworks) == ''">netcoreapp3.0</DromedaryAppTargetFrameworks>
-    <DromedaryLibTargetFrameworks Condition="$(ThingLibTargetFrameworks) == ''">netstandard2.1</DromedaryLibTargetFrameworks>
+    <DromedaryAppTargetFramework Condition="$(DromedaryAppTargetFramework) == ''">netcoreapp3.0</DromedaryAppTargetFramework>
+    <DromedaryLibTargetFramework Condition="$(DromedaryLibTargetFramework) == ''">netstandard2.1</DromedaryLibTargetFramework>
 
     <Product>Dromedary</Product>
     <NeutralLanguage>en-US</NeutralLanguage>

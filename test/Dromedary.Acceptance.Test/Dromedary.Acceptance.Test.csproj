@@ -1,7 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+<<<<<<< HEAD
     <TargetFramework>$(DromedaryAppTargetFrameworks)</TargetFramework>
+=======
+    <TargetFramework>$(DromedaryAppTargetFramework)</TargetFramework>
+>>>>>>> 4c89ab088a5160b183e59f3f5b5d967f00188d61
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 

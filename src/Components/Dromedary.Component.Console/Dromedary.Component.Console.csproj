@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>$(DromedaryLibTargetFrameworks)</TargetFramework>
+    <TargetFramework>$(DromedaryLibTargetFramework)</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
