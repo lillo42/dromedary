@@ -6,11 +6,11 @@ using Xunit;
 
 namespace Dromedary.Acceptance.Test
 {
-    public class DromedaryContextBuilder
+    public class DromedaryContextBuilderTest
     {
         private readonly Fixture _fixture;
 
-        public DromedaryContextBuilder()
+        public DromedaryContextBuilderTest()
         {
             _fixture = new Fixture();
         }

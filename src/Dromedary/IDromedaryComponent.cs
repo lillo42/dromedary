@@ -4,7 +4,6 @@ namespace Dromedary
 {
     public interface IDromedaryComponent
     {
-        IDromedaryContext Context { get; }
         IEndpoint CreateEndpoint();
     }
 

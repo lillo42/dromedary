@@ -4,8 +4,6 @@ namespace Dromedary
 {
     public interface IEndpoint
     {
-        IDromedaryContext Context { get; }
-        
         IProducer CreateProducer();
 
         IConsumer CreateConsumer();

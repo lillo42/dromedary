@@ -4,6 +4,7 @@ namespace Dromedary.Statements
     {
         From,
         To,
+        Log,
         Process
     }
 }

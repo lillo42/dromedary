@@ -14,24 +14,24 @@ namespace Dromedary.Test.Factories
     {
         private readonly Fixture _fixture;
         private readonly DefaultExchangeFactory _factory;
-        private readonly IDromedaryContext _context;
         private readonly IExchangeIdGenerator _generator;
+        private readonly IMessageFactory _messageFactory;
 
         public DefaultExchangeFactoryTest()
         {
             _fixture = new Fixture();
-            _context = Substitute.For<IDromedaryContext>();
             _generator = Substitute.For<IExchangeIdGenerator>();
-            _factory = new DefaultExchangeFactory(_context, _generator);
+            _messageFactory = Substitute.For<IMessageFactory>();
+            _factory = new DefaultExchangeFactory( _generator, _messageFactory);
         }
 
         [Fact]
-        public void Constructor_Should_Throw_When_ContextIsNull() 
-            => Throws<ArgumentNullException>(() => new DefaultExchangeFactory(null, _generator));
+        public void Constructor_Should_Throw_When_GeneratorIsNull() 
+            => Throws<ArgumentNullException>(() => new DefaultExchangeFactory(null, _messageFactory));
         
         [Fact]
-        public void Constructor_Should_Throw_When_GeneratorIsNull() 
-            => Throws<ArgumentNullException>(() => new DefaultExchangeFactory(_context, null));
+        public void Constructor_Should_Throw_When_MessageFactoryIsNull() 
+            => Throws<ArgumentNullException>(() => new DefaultExchangeFactory(_generator, null));
 
         [Fact]
         public void Create_Should_ReturnNewInstance()
@@ -41,15 +41,23 @@ namespace Dromedary.Test.Factories
             _generator.Generate()
                 .Returns(id);
             
+            var message = Substitute.For<IMessage>();
+            _messageFactory.Create(Arg.Any<IExchange>())
+                .Returns(message);
+            
             var result = _factory.Create();
             
             result.Should().NotBeNull();
             result.Id.Should().Be(id);
-            result.Context.Should().Be(_context);
+            result.Message.Should().Be(message);
 
             _generator
                 .Received(1)
                 .Generate();
+
+            _messageFactory
+                .Received(1)
+                .Create(Arg.Any<IExchange>());
         }
     }
 }

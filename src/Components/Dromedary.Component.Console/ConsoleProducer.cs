@@ -10,11 +10,10 @@ namespace Dromedary.Component.Console
     public class ConsoleProducer : IProducer
     {
         private readonly IExchangeFactory _exchangeFactory;
-        private readonly IMessageFactory _messageFactory;
-        public ConsoleProducer(IExchangeFactory exchangeFactory, IMessageFactory messageFactory)
+
+        public ConsoleProducer(IExchangeFactory exchangeFactory)
         {
             _exchangeFactory = exchangeFactory ?? throw new ArgumentNullException(nameof(exchangeFactory));
-            _messageFactory = messageFactory ?? throw new ArgumentNullException(nameof(messageFactory));
         }
 
         public string PromptMessage { get; set; }
@@ -27,7 +26,6 @@ namespace Dromedary.Component.Console
 
                 var input = ReadLine();
                 var exchange = _exchangeFactory.Create();
-                exchange.Message = _messageFactory.Create(exchange);
                 exchange.Message.Body = input;
 
                 await channel.WriteAsync(exchange, cancellationToken)

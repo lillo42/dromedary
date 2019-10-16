@@ -8,20 +8,16 @@ namespace Dromedary.Component.Console
     public class ConsoleEndpoint : IEndpoint
     {
         private readonly IServiceProvider _service;
-        public ConsoleEndpoint(IDromedaryContext context, IServiceProvider serviceProvider)
+        public ConsoleEndpoint(IServiceProvider serviceProvider)
         {
-            Context = context ?? throw new ArgumentNullException(nameof(context));
             _service = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
         }
 
-        public IDromedaryContext Context { get; }
-        
         public string PromptMessage { get; set; }
 
         public IProducer CreateProducer()
             => new ConsoleProducer(
-                _service.GetRequiredService<IExchangeFactory>(),
-                _service.GetRequiredService<IMessageFactory>())
+                _service.GetRequiredService<IExchangeFactory>())
             {
                 PromptMessage = PromptMessage
             };

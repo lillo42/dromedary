@@ -5,14 +5,12 @@ namespace Dromedary
 {
     public class DefaultExchange : IExchange
     {
-        public DefaultExchange(string id, IDromedaryContext context)
+        public DefaultExchange(string id)
         {
             Id = id;
-            Context = context;
         }
 
         public virtual  string Id { get; }
-        public virtual IDromedaryContext Context { get; }
         public virtual IDictionary<string, object> Properties { get; set; } = new Dictionary<string, object>();
         public virtual IMessage Message { get; set; }
         public virtual bool HasProperties => Properties.Count > 0;
@@ -25,7 +23,7 @@ namespace Dromedary
         
         public virtual IExchange Clone()
         {
-            return new DefaultExchange(Id, Context)
+            return new DefaultExchange(Id)
             {
                 Exception = Exception,
                 Properties = Properties

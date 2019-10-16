@@ -5,16 +5,20 @@ namespace Dromedary.Factories
 {
     public class DefaultExchangeFactory : IExchangeFactory
     {
-        private readonly IDromedaryContext _context;
         private readonly IExchangeIdGenerator _generator;
+        private readonly IMessageFactory _messageFactory;
 
-        public DefaultExchangeFactory(IDromedaryContext context, IExchangeIdGenerator generator)
+        public DefaultExchangeFactory(IExchangeIdGenerator generator, IMessageFactory messageFactory)
         {
-            _context = context ?? throw new ArgumentNullException(nameof(context));
             _generator = generator ?? throw new ArgumentNullException(nameof(generator));
+            _messageFactory = messageFactory;
         }
 
         public IExchange Create() 
-            => new DefaultExchange(_generator.Generate(), _context);
+        {
+            var exchange =  new DefaultExchange(_generator.Generate());
+            exchange.Message = _messageFactory.Create(exchange);
+            return exchange;
+        }
     }
 }

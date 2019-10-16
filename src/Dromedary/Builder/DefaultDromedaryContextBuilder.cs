@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Dromedary.Activator;
+using Dromedary.Components.Process;
 using Dromedary.Factories;
 using Dromedary.Generator;
 using Microsoft.Extensions.DependencyInjection;
@@ -40,6 +41,8 @@ namespace Dromedary.Builder
             Service.TryAddScoped<IChannelFactory, DefaultChannelFactory>();
             Service.TryAddScoped<IExchangeResolver, DefaultExchangeResolver>();
             Service.TryAddScoped(provider => provider.GetRequiredService<IExchangeResolver>().Exchange);
+            
+            Service.TryAddTransient<IProcessDromedaryComponent, ProcessDromedaryComponent>();
             
             
             Service.TryAddTransient<IRouteBuilder, DefaultRouteBuilder>();

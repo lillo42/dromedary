@@ -1,6 +1,8 @@
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Dromedary.Commands;
+using Dromedary.Components.Process;
 using Dromedary.Factories;
 using Dromedary.Statements;
 
@@ -170,17 +172,44 @@ namespace Dromedary.Builder
         #endregion
         
         #region Process
-        public IRouteBuilder Process(string uri)
-            => throw new NotImplementedException();
         public IRouteBuilder Process<T>()
             where T : IProcessor
-            => throw new NotImplementedException();
+        {
+            AddProcess(_commandFactory.CreateCommand<IProcessDromedaryComponent>(p =>
+            {
+                p.ProcessType = typeof(T);
+            }));
+            return this;
+        }
         public IRouteBuilder Process(Type process)
-            => throw new NotImplementedException();
-        public IProcessor Processor(Action<IExchange> process)
-            => throw new NotImplementedException();
-        public IProcessor Processor(Func<IExchange, Task> process)
-            => throw new NotImplementedException();
+        {
+            AddProcess(_commandFactory.CreateCommand<IProcessDromedaryComponent>(p => p.ProcessType = process));
+            return this;
+        }
+
+        public IRouteBuilder Processor(Action<IExchange> process)
+        {
+            AddProcess(_commandFactory.CreateCommand<IProcessDromedaryComponent>(p =>
+            {
+                p.Process = process;
+            }));
+            return this;
+        }
+
+        public IRouteBuilder Processor(Func<IExchange, Task> process)
+        {
+            AddProcess(_commandFactory.CreateCommand<IProcessDromedaryComponent>(p =>
+            {
+                p.AsyncProcess = process;
+            }));
+            return this;
+        }
+
+        private void AddProcess(IConfigureComponent configureComponent)
+        {
+            var statement = _statementFactory.Create(configureComponent, Statement.Process);
+            _graphBuilder.Add(statement);
+        }
         #endregion
         
         #region Build
