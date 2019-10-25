@@ -33,7 +33,6 @@ namespace Dromedary.Builder
 
             Service.TryAddSingleton<IMessageFactory, DefaultMessageFactory>();
             Service.TryAddSingleton<IExchangeFactory, DefaultExchangeFactory>();
-            Service.TryAddSingleton<ICommandFactory, DefaultCommandFactory>();
             Service.TryAddSingleton<IStatementFactory, DefaultStatementFactory>();
             Service.TryAddSingleton<IRouteNodeFactory, DefaultRouteNodeFactory>();
             Service.TryAddTransient<IRouteGraphBuilder, DefaultRouteGraphBuilder>();

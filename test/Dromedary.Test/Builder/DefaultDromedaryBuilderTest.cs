@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using AutoFixture;
 using Dromedary.Builder;
 using FluentAssertions;
@@ -131,13 +132,22 @@ namespace Dromedary.Test.Builder
         
         private class FakeComponent : IFakeComponent
         {
-            public FakeComponent(IDromedaryContext context)
+            public IEndpoint CreateEndpoint()
             {
-                Context = context;
+                throw new NotImplementedException();
             }
 
-            public IDromedaryContext Context { get; }
-            public IEndpoint CreateEndpoint()
+            public void ConfigureProperties(Action<IDromedaryComponent> config)
+            {
+                
+            }
+
+            public Task ConfigurePropertiesAsync(Func<IDromedaryComponent, Task> config)
+            {
+                throw new NotImplementedException();
+            }
+
+            public void ConfigureProperties(IDictionary<string, object> config)
             {
                 throw new NotImplementedException();
             }

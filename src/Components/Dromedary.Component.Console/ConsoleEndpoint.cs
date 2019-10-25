@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using Dromedary.Factories;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -24,13 +23,5 @@ namespace Dromedary.Component.Console
 
         public IConsumer CreateConsumer() 
             => new ConsoleConsumer();
-
-        public void ConfigureProperties(IDictionary<string, object> option)
-        {
-            if (option.ContainsKey(nameof(PromptMessage)))
-            {
-                PromptMessage = option[nameof(PromptMessage)] as string;
-            }
-        }
     }
 }

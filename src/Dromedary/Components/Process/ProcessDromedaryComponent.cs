@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Dromedary.Components.Process
@@ -19,6 +20,31 @@ namespace Dromedary.Components.Process
         public IEndpoint CreateEndpoint()
         {
             return new ProcessEndpoint(_provider, ProcessType, Process, AsyncProcess);
+        }
+
+        public void ConfigureProperties(Action<IDromedaryComponent> config)
+        {
+            if (config == null)
+            {
+                throw new ArgumentNullException(nameof(config));
+            }
+
+            config(this);
+        }
+
+        public async Task ConfigurePropertiesAsync(Func<IDromedaryComponent, Task> config)
+        {
+            if (config == null)
+            {
+                throw new ArgumentNullException(nameof(config));
+            }
+
+            await config(this);
+        }
+
+        public void ConfigureProperties(IDictionary<string, object> config)
+        {
+            throw new NotImplementedException();
         }
     }
 }

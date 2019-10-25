@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Dromedary.Statements;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -42,15 +43,26 @@ namespace Dromedary
                 return false;
             }
             
-            var configure = _currentNode.Statement.ConfigureComponent;
+            var statement = _currentNode.Statement;
              
-            var component = (IDromedaryComponent)_service.GetRequiredService(configure.ComponentType);
-            configure.Configure(_exchange, component);
+            var component = (IDromedaryComponent)_service.GetRequiredService(statement.Component);
+            ConfigureComponentAsync(statement, component);
             Current = component.CreateEndpoint()
                 .CreateConsumer()
                 .Processor;
             
             return true;
+        }
+
+        private static ValueTask ConfigureComponentAsync(IStatement statement, IDromedaryComponent component)
+        {
+            if (statement.ConfigureComponent != null)
+            {
+                statement.ConfigureComponent(component);
+                return new ValueTask();
+            }
+            
+            return new ValueTask(statement.ConfigureComponentAsync(component));
         }
 
         private static IRouteNode NextNode(IRouteNode current) 

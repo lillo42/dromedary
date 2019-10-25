@@ -16,23 +16,13 @@ namespace Dromedary.Builder
 
         IRouteBuilder From<T>(Action<T> configure)
             where T : class, IDromedaryComponent;
-        
-        IRouteBuilder From<T>(Action<T, IExchange> configure)
-            where T : class, IDromedaryComponent;
-        
+
         IRouteBuilder From(Action<IDromedaryComponent> configure, Type componentType);
-        
-        IRouteBuilder From(Action<IDromedaryComponent, IExchange> configure, Type componentType);
 
         IRouteBuilder From<T>(Func<T, Task> configure)
             where T : class, IDromedaryComponent;
         
-        IRouteBuilder From<T>(Func<T, IExchange, Task> configure)
-            where T : class, IDromedaryComponent;
-        
         IRouteBuilder From(Func<IDromedaryComponent, Task> configure, Type componentType);
-
-        IRouteBuilder From(Func<IDromedaryComponent, IExchange,Task> configure, Type componentType);
         #endregion
 
         #region To
@@ -43,19 +33,13 @@ namespace Dromedary.Builder
         
         IRouteBuilder To<T>(Action<T> configure)
             where T : class, IDromedaryComponent;
-        
-        IRouteBuilder To<T>(Action<T, IExchange> configure)
-            where T : class, IDromedaryComponent;
-        
-        IRouteBuilder To(Action<IDromedaryComponent, IExchange> configure, Type componentType);
+
+        IRouteBuilder To(Action<IDromedaryComponent> configure, Type componentType);
         
         IRouteBuilder To<T>(Func<T, Task> configure)
             where T : class, IDromedaryComponent;
-        
-        IRouteBuilder To<T>(Func<T, IExchange, Task> configure)
-            where T : class, IDromedaryComponent;
-        
-        IRouteBuilder To(Func<IDromedaryComponent, IExchange, Task> configure, Type componentType);
+
+        IRouteBuilder To(Func<IDromedaryComponent, Task> configure, Type componentType);
         #endregion
 
         #region Process

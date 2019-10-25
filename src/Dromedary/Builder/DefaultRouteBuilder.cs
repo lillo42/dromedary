@@ -1,7 +1,5 @@
 using System;
-using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
-using Dromedary.Commands;
 using Dromedary.Components.Process;
 using Dromedary.Factories;
 using Dromedary.Statements;
@@ -11,7 +9,6 @@ namespace Dromedary.Builder
     public class DefaultRouteBuilder : IRouteBuilder
     {
         private readonly IDromedaryContext _context;
-        private readonly ICommandFactory _commandFactory;
         private readonly IStatementFactory _statementFactory;
         private readonly IRouteGraphBuilder _graphBuilder;
 
@@ -19,12 +16,10 @@ namespace Dromedary.Builder
         private string _description;
 
         public DefaultRouteBuilder(IDromedaryContext context, 
-            ICommandFactory commandFactory, 
             IStatementFactory statementFactory, 
             IRouteGraphBuilder graphBuilder)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
-            _commandFactory = commandFactory ?? throw new ArgumentNullException(nameof(commandFactory));
             _statementFactory = statementFactory ?? throw new ArgumentNullException(nameof(statementFactory));
             _graphBuilder = graphBuilder ?? throw new ArgumentNullException(nameof(graphBuilder));
         }
@@ -46,7 +41,6 @@ namespace Dromedary.Builder
         #endregion
 
         #region From
-
         public IRouteBuilder From(string uri)
         {
             throw new NotImplementedException();
@@ -55,58 +49,28 @@ namespace Dromedary.Builder
         public IRouteBuilder From<T>(Action<T> configure)
             where T : class, IDromedaryComponent
         {
-            AddFrom(_commandFactory.CreateCommand(configure));
-            return this;
-        }
-
-        public IRouteBuilder From<T>(Action<T, IExchange> configure) 
-            where T : class, IDromedaryComponent
-        {
-            AddFrom(_commandFactory.CreateCommand(configure));
+            AddNode(_statementFactory.Create(Statement.From, configure));
             return this;
         }
 
         public IRouteBuilder From(Action<IDromedaryComponent> configure, Type componentType)
         {
-            AddFrom(_commandFactory.CreateCommand(configure, componentType));
-            return this;
-        }
-
-        public IRouteBuilder From(Action<IDromedaryComponent, IExchange> configure, Type componentType)
-        {
-            AddFrom(_commandFactory.CreateCommand(configure, componentType));
+            AddNode(_statementFactory.Create(Statement.From, componentType, configure));
             return this;
         }
 
         public IRouteBuilder From<T>(Func<T, Task> configure) 
             where T : class, IDromedaryComponent
         {
-            AddFrom(_commandFactory.CreateCommand(configure));
-            return this;
-        }
-
-        public IRouteBuilder From<T>(Func<T, IExchange, Task> configure) 
-            where T : class, IDromedaryComponent
-        {
-            AddFrom(_commandFactory.CreateCommand(configure));
+            AddNode(_statementFactory.Create(Statement.From, configure));
             return this;
         }
 
         public IRouteBuilder From(Func<IDromedaryComponent, Task> configure, Type componentType)
         {
-            AddFrom(_commandFactory.CreateCommand(configure, componentType));
+            AddNode(_statementFactory.Create(Statement.From, componentType, configure));
             return this;
         }
-
-        public IRouteBuilder From(Func<IDromedaryComponent, IExchange, Task> configure, Type componentType)
-        {
-            AddFrom(_commandFactory.CreateCommand(configure, componentType));
-            return this;
-        }
-
-        private void AddFrom(IConfigureComponent configureComponent) 
-            => _graphBuilder.Add(_statementFactory.Create(configureComponent, Statement.From));
-
         #endregion
 
         #region To
@@ -119,63 +83,43 @@ namespace Dromedary.Builder
         public IRouteBuilder To<T>()
             where T : class, IDromedaryComponent
         {
-            AddTo(_commandFactory.CreateCommand<T>(_ => { }));
+            AddNode(_statementFactory.Create<T>(Statement.To, _ => {}));
             return this;
         }
 
         public IRouteBuilder To<T>(Action<T> configure) 
             where T : class, IDromedaryComponent
         {
-            AddTo(_commandFactory.CreateCommand(configure));
+            AddNode(_statementFactory.Create<T>(Statement.To, configure));
             return this;
         }
 
-        public IRouteBuilder To<T>(Action<T, IExchange> configure) 
-            where T : class, IDromedaryComponent
+        public IRouteBuilder To(Action<IDromedaryComponent> configure, Type componentType)
         {
-            AddTo(_commandFactory.CreateCommand(configure));
-            return this;
-        }
-
-        public IRouteBuilder To(Action<IDromedaryComponent, IExchange> configure, Type componentType)
-        {
-            AddTo(_commandFactory.CreateCommand(configure, componentType));
-            return this;
-        }
-
-        public IRouteBuilder To<T>(Func<T, Task> configure) 
-            where T : class, IDromedaryComponent
-        {
-            AddTo(_commandFactory.CreateCommand(configure));
-            return this;
-        }
-
-        public IRouteBuilder To<T>(Func<T, IExchange, Task> configure) 
-            where T : class, IDromedaryComponent
-        {
-            AddTo(_commandFactory.CreateCommand(configure));
-            return this;
-        }
-
-        public IRouteBuilder To(Func<IDromedaryComponent, IExchange, Task> configure, Type componentType)
-        {
-            AddTo(_commandFactory.CreateCommand(configure, componentType));
+            AddNode(_statementFactory.Create(Statement.To, componentType, configure));
             return this;
         }
         
-        private void AddTo(IConfigureComponent configureComponent)
+        public IRouteBuilder To<T>(Func<T, Task> configure) 
+            where T : class, IDromedaryComponent
         {
-            var statement = _statementFactory.Create(configureComponent, Statement.To);
-            _graphBuilder.Add(statement);
+            AddNode(_statementFactory.Create<T>(Statement.To, configure));
+            return this;
         }
 
+        public IRouteBuilder To(Func<IDromedaryComponent, Task> configure, Type componentType)
+        {
+            AddNode(_statementFactory.Create(Statement.To,componentType, configure));
+            return this;
+        }
+        
         #endregion
         
         #region Process
         public IRouteBuilder Process<T>()
             where T : IProcessor
         {
-            AddProcess(_commandFactory.CreateCommand<IProcessDromedaryComponent>(p =>
+            AddNode(_statementFactory.Create<IProcessDromedaryComponent>(Statement.Process, p =>
             {
                 p.ProcessType = typeof(T);
             }));
@@ -183,13 +127,16 @@ namespace Dromedary.Builder
         }
         public IRouteBuilder Process(Type process)
         {
-            AddProcess(_commandFactory.CreateCommand<IProcessDromedaryComponent>(p => p.ProcessType = process));
+            AddNode(_statementFactory.Create<IProcessDromedaryComponent>(Statement.Process, p =>
+            {
+                p.ProcessType = process;
+            }));
             return this;
         }
 
         public IRouteBuilder Processor(Action<IExchange> process)
         {
-            AddProcess(_commandFactory.CreateCommand<IProcessDromedaryComponent>(p =>
+            AddNode(_statementFactory.Create<IProcessDromedaryComponent>(Statement.Process, p =>
             {
                 p.Process = process;
             }));
@@ -198,19 +145,16 @@ namespace Dromedary.Builder
 
         public IRouteBuilder Processor(Func<IExchange, Task> process)
         {
-            AddProcess(_commandFactory.CreateCommand<IProcessDromedaryComponent>(p =>
+            AddNode(_statementFactory.Create<IProcessDromedaryComponent>(Statement.Process, p =>
             {
                 p.AsyncProcess = process;
             }));
             return this;
         }
-
-        private void AddProcess(IConfigureComponent configureComponent)
-        {
-            var statement = _statementFactory.Create(configureComponent, Statement.Process);
-            _graphBuilder.Add(statement);
-        }
         #endregion
+
+        private void AddNode(IStatement statement)
+            => _graphBuilder.Add(statement);
         
         #region Build
 

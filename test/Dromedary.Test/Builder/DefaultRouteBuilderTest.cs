@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoFixture;
 using Dromedary.Builder;
-using Dromedary.Commands;
 using Dromedary.Factories;
 using Dromedary.Statements;
 using FluentAssertions;
@@ -18,7 +17,6 @@ namespace Dromedary.Test.Builder
     {
         private readonly Fixture _fixture;
         private readonly IDromedaryContext _context;
-        private readonly ICommandFactory _commandFactory;
         private readonly IStatementFactory _statementFactory;
         private readonly IRouteGraphBuilder _graphBuilder;
         private readonly IRouteBuilder _builder;
@@ -28,12 +26,10 @@ namespace Dromedary.Test.Builder
             _fixture = new Fixture();
             
             _context = Substitute.For<IDromedaryContext>();
-            _commandFactory = Substitute.For<ICommandFactory>();
             _statementFactory = Substitute.For<IStatementFactory>();
             _graphBuilder = Substitute.For<IRouteGraphBuilder>();
             
-            _builder = new DefaultRouteBuilder(_context, 
-                _commandFactory,
+            _builder = new DefaultRouteBuilder(_context,
                 _statementFactory,
                 _graphBuilder);
         }
@@ -41,22 +37,16 @@ namespace Dromedary.Test.Builder
         [Fact]
         public void Create_Should_Throw_When_ContextIsNull() 
             => Throws<ArgumentNullException>(() => new DefaultRouteBuilder(null, null,
-                null, null));
-        
-        [Fact]
-        public void Create_Should_Throw_When_CommandFactoryIsNull() 
-            => Throws<ArgumentNullException>(() => new DefaultRouteBuilder(_context, null,
-                null, null));
-        
+                null));
+
         [Fact]
         public void Create_Should_Throw_When_StatementFactoryIsNull() 
-            => Throws<ArgumentNullException>(() => new DefaultRouteBuilder(_context, _commandFactory,
+            => Throws<ArgumentNullException>(() => new DefaultRouteBuilder(_context,
                 null, null));
         
         [Fact]
         public void Create_Should_Throw_When_GraphBuilderIsNull() 
-            => Throws<ArgumentNullException>(() => new DefaultRouteBuilder(_context, _commandFactory,
-                _statementFactory, null));
+            => Throws<ArgumentNullException>(() => new DefaultRouteBuilder(_context, _statementFactory, null));
         
         [Fact]
         public void Build_Should_SetId_When_IdIsSet()
@@ -122,14 +112,10 @@ namespace Dromedary.Test.Builder
         [Fact]
         public void From_Should_AddFrom_When_CallFromAction()
         {
-            var command = Substitute.For<IConfigureComponent<IFakeComponent>>();
-            _commandFactory.CreateCommand(Arg.Any<Action<IFakeComponent>>())
-                .Returns(command);
-
             var statement = Substitute.For<IStatement>();
             statement.Statement.Returns(Statement.From);
 
-            _statementFactory.Create(command, Statement.From)
+            _statementFactory.Create(Statement.From,Arg.Any<Action<IFakeComponent>>())
                 .Returns(statement);
 
             _graphBuilder.Add(statement)
@@ -141,48 +127,10 @@ namespace Dromedary.Test.Builder
                     component.Text = _fixture.Create<string>();
                 });
 
-            _commandFactory
-                .Received(1)
-                .CreateCommand(Arg.Any<Action<IFakeComponent>>());
             
             _statementFactory
                 .Received(1)
-                .Create(command, Statement.From);
-
-            _graphBuilder
-                .Received(1)
-                .Add(statement);
-        }
-        
-        [Fact]
-        public void From_Should_AddFrom_When_CallFromActionWithExchange()
-        {
-            var command = Substitute.For<IConfigureComponent<IFakeComponent>>();
-            _commandFactory.CreateCommand(Arg.Any<Action<IFakeComponent, IExchange>>())
-                .Returns(command);
-
-            var statement = Substitute.For<IStatement>();
-            statement.Statement.Returns(Statement.From);
-
-            _statementFactory.Create(command, Statement.From)
-                .Returns(statement);
-
-            _graphBuilder.Add(statement)
-                .Returns(_graphBuilder);
-            
-            _builder
-                .From<IFakeComponent>((component, exchange) =>
-                {
-                    component.Text = _fixture.Create<string>();
-                });
-
-            _commandFactory
-                .Received(1)
-                .CreateCommand(Arg.Any<Action<IFakeComponent, IExchange>>());
-            
-            _statementFactory
-                .Received(1)
-                .Create(command, Statement.From);
+                .Create(Statement.From,Arg.Any<Action<IFakeComponent>>());
 
             _graphBuilder
                 .Received(1)
@@ -192,63 +140,21 @@ namespace Dromedary.Test.Builder
         [Fact]
         public void From_Should_AddFrom_When_CallFromActionWithType()
         {
-            var command = Substitute.For<IConfigureComponent>();
-            _commandFactory.CreateCommand(Arg.Any<Action<IDromedaryComponent>>(), typeof(IFakeComponent))
-                .Returns(command);
-
             var statement = Substitute.For<IStatement>();
             statement.Statement.Returns(Statement.From);
 
-            _statementFactory.Create(command, Statement.From)
+            _statementFactory.Create(Statement.From, typeof(IFakeComponent),Arg.Any<Action<IDromedaryComponent>>())
                 .Returns(statement);
 
             _graphBuilder.Add(statement)
                 .Returns(_graphBuilder);
-
-            Action<IDromedaryComponent> config = (c) => { };
-            _builder
-                .From(config, typeof(IFakeComponent));
-
-            _commandFactory
-                .Received(1)
-                .CreateCommand(Arg.Any<Action<IDromedaryComponent>>(), typeof(IFakeComponent));
             
+            _builder
+                .From(config => { }, typeof(IFakeComponent));
+
             _statementFactory
                 .Received(1)
-                .Create(command, Statement.From);
-
-            _graphBuilder
-                .Received(1)
-                .Add(statement);
-        }
-        
-        [Fact]
-        public void From_Should_AddFrom_When_CallFromActionWithExchangeAndType()
-        {
-            var command = Substitute.For<IConfigureComponent>();
-            _commandFactory.CreateCommand(Arg.Any<Action<IDromedaryComponent, IExchange>>(), typeof(IFakeComponent))
-                .Returns(command);
-
-            var statement = Substitute.For<IStatement>();
-            statement.Statement.Returns(Statement.From);
-
-            _statementFactory.Create(command, Statement.From)
-                .Returns(statement);
-
-            _graphBuilder.Add(statement)
-                .Returns(_graphBuilder);
-
-            Action<IDromedaryComponent, IExchange> config = (c, e) => { };
-            _builder
-                .From(config, typeof(IFakeComponent));
-
-            _commandFactory
-                .Received(1)
-                .CreateCommand(Arg.Any<Action<IDromedaryComponent, IExchange>>(), typeof(IFakeComponent));
-            
-            _statementFactory
-                .Received(1)
-                .Create(command, Statement.From);
+                .Create(Statement.From, typeof(IFakeComponent),Arg.Any<Action<IDromedaryComponent>>());
 
             _graphBuilder
                 .Received(1)
@@ -258,14 +164,10 @@ namespace Dromedary.Test.Builder
         [Fact]
         public void From_Should_AddFrom_When_CallFromFunc()
         {
-            var command = Substitute.For<IConfigureComponent<IFakeComponent>>();
-            _commandFactory.CreateCommand(Arg.Any<Func<IFakeComponent, Task>>())
-                .Returns(command);
-
             var statement = Substitute.For<IStatement>();
             statement.Statement.Returns(Statement.From);
 
-            _statementFactory.Create(command, Statement.From)
+            _statementFactory.Create(Statement.From, Arg.Any<Func<IFakeComponent, Task>>())
                 .Returns(statement);
 
             _graphBuilder.Add(statement)
@@ -278,14 +180,34 @@ namespace Dromedary.Test.Builder
                     
                     return Task.CompletedTask;
                 });
-
-            _commandFactory
-                .Received(1)
-                .CreateCommand(Arg.Any<Action<IFakeComponent>>());
             
             _statementFactory
                 .Received(1)
-                .Create(command, Statement.From);
+                .Create(Statement.From, Arg.Any<Func<IFakeComponent, Task>>());
+
+            _graphBuilder
+                .Received(1)
+                .Add(statement);
+        }
+        
+        [Fact]
+        public void From_Should_AddFrom_When_CallFromFuncWithType()
+        {
+            var statement = Substitute.For<IStatement>();
+            statement.Statement.Returns(Statement.From);
+
+            _statementFactory.Create(Statement.From, typeof(IFakeComponent), Arg.Any<Func<IDromedaryComponent, Task>>())
+                .Returns(statement);
+
+            _graphBuilder.Add(statement)
+                .Returns(_graphBuilder);
+            
+            _builder
+                .From(component => Task.CompletedTask, typeof(IFakeComponent));
+            
+            _statementFactory
+                .Received(1)
+                .Create(Statement.From, typeof(IFakeComponent), Arg.Any<Func<IDromedaryComponent, Task>>());
 
             _graphBuilder
                 .Received(1)
@@ -301,14 +223,25 @@ namespace Dromedary.Test.Builder
         {
             public FakeComponent(IDromedaryContext context)
             {
-                Context = context;
             }
 
             public string Text { get; set; }
-
-            public IDromedaryContext Context { get; }
             
             public IEndpoint CreateEndpoint()
+            {
+                throw new NotImplementedException();
+            }
+
+            public void ConfigureProperties(Action<IDromedaryComponent> config)
+            {
+            }
+
+            public Task ConfigurePropertiesAsync(Func<IDromedaryComponent, Task> config)
+            {
+                throw new NotImplementedException();
+            }
+
+            public void ConfigureProperties(IDictionary<string, object> config)
             {
                 throw new NotImplementedException();
             }

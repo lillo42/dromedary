@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
 using Dromedary.Factories;
+using Dromedary.Statements;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Dromedary
@@ -25,10 +26,10 @@ namespace Dromedary
         public async Task ExecuteAsync(IServiceProvider service, CancellationToken cancellationToken = default)
         {
             var @from = RouteGraph.Root;
-            var configure = from.Statement.ConfigureComponent;
+            var statement = from.Statement;
 
-            var component = (IDromedaryComponent)service.GetRequiredService(configure.ComponentType);
-            configure.Configure(null, component);
+            var component = (IDromedaryComponent)service.GetRequiredService(statement.Component);
+            await ConfigureComponent(statement, component);
 
             var producer = component.CreateEndpoint()
                 .CreateProducer();
@@ -47,6 +48,17 @@ namespace Dromedary
 
             await producerTask;
             await consumer;
+        }
+
+        private static ValueTask ConfigureComponent(IStatement statement, IDromedaryComponent component)
+        {
+            if (statement.ConfigureComponent != null)
+            {
+                statement.ConfigureComponent(component);
+                return new ValueTask();
+            }
+            
+            return new ValueTask(statement.ConfigureComponentAsync(component));
         }
 
 
