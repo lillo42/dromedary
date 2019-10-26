@@ -1,22 +1,22 @@
 using System;
+using Dromedary.Activator;
 using Dromedary.Factories;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Dromedary.Component.Console
 {
     public class ConsoleEndpoint : IEndpoint
     {
-        private readonly IServiceProvider _service;
-        public ConsoleEndpoint(IServiceProvider serviceProvider)
+        private readonly IActivator _service;
+        public ConsoleEndpoint(IActivator activator)
         {
-            _service = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
+            _service = activator ?? throw new ArgumentNullException(nameof(activator));
         }
 
         public string PromptMessage { get; set; }
 
         public IProducer CreateProducer()
             => new ConsoleProducer(
-                _service.GetRequiredService<IExchangeFactory>())
+                _service.CreateInstance<IExchangeFactory>())
             {
                 PromptMessage = PromptMessage
             };

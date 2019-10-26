@@ -1,29 +1,41 @@
 using System;
+using System.Collections.Concurrent;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Dromedary.Activator
 {
     public class DefaultActivator : IActivator
     {
-        public T CreateInstance<T>(IServiceProvider provider)
+        private static readonly ConcurrentDictionary<Type, ObjectFactory> s_factories = new ConcurrentDictionary<Type, ObjectFactory>();
+        private readonly IServiceProvider _provider;
+
+        public DefaultActivator(IServiceProvider provider)
         {
-            var service = provider.GetService<T>();
+            _provider = provider ?? throw new ArgumentNullException(nameof(provider));
+        }
+
+
+        public T CreateInstance<T>()
+        {
+            var service = _provider.GetService<T>();
             if (service == null)
             {
-                var factory = ActivatorUtilities.CreateFactory(typeof(T), Type.EmptyTypes);
-                service = (T)factory(provider, Array.Empty<object>());
+                var factory = s_factories.GetOrAdd(typeof(T),
+                    t => ActivatorUtilities.CreateFactory(t, Type.EmptyTypes));
+                service = (T)factory(_provider, Array.Empty<object>());
             }
 
             return service;
         }
 
-        public object CreateInstance(IServiceProvider provider, Type type)
+        public object CreateInstance(Type type)
         {
-            var service = provider.GetService(type);
+            var service = _provider.GetService(type);
             if (service == null)
             {
-                var factory = ActivatorUtilities.CreateFactory(type, Type.EmptyTypes);
-                service = factory(provider, Array.Empty<object>());
+                var factory = s_factories.GetOrAdd(type,
+                    t => ActivatorUtilities.CreateFactory(t, Type.EmptyTypes));
+                service = factory(_provider, Array.Empty<object>());
             }
 
             return service;

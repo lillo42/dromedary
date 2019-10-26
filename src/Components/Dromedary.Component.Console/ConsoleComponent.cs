@@ -1,21 +1,22 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Dromedary.Activator;
 
 namespace Dromedary.Component.Console
 {
     public class ConsoleComponent : IDromedaryComponent<ConsoleEndpoint>
     {
-        private readonly IServiceProvider _service;
-        public ConsoleComponent(IServiceProvider service)
+        private readonly IActivator _activator;
+        public ConsoleComponent(IActivator activator)
         {
-            _service = service ?? throw new ArgumentNullException(nameof(service));
+            _activator = activator ?? throw new ArgumentNullException(nameof(activator));
         }
 
         public string PromptMessage { get; set; }
 
         public ConsoleEndpoint CreateEndpoint()
-            => new ConsoleEndpoint(_service)
+            => new ConsoleEndpoint(_activator)
             {
                 PromptMessage = PromptMessage
             };

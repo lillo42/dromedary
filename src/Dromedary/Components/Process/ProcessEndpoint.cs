@@ -1,20 +1,23 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
+using Dromedary.Activator;
 
 namespace Dromedary.Components.Process
 {
     internal class ProcessEndpoint : IEndpoint
     {
-        private readonly IServiceProvider _provider;
-        public ProcessEndpoint(IServiceProvider provider, 
+        private readonly IActivator _activator;
+        private readonly Type _processType;
+        private readonly Action<IExchange> _process;
+        private readonly Func<IExchange, Task> _asyncProcess;
+        public ProcessEndpoint(IActivator provider, 
             Type processType, 
             Action<IExchange> process, 
             Func<IExchange, Task> asyncProcess)
         {
-            _provider = provider ?? throw new ArgumentNullException(nameof(provider));
-            this._processType = processType;
+            _activator = provider ?? throw new ArgumentNullException(nameof(provider));
+            _processType = processType;
             _process = process;
             _asyncProcess = asyncProcess;
 
@@ -24,13 +27,8 @@ namespace Dromedary.Components.Process
             }
         }
 
-        private readonly Type _processType;
-        private readonly Action<IExchange> _process;
-        private readonly Func<IExchange, Task> _asyncProcess;
-        
-        
         public IProducer CreateProducer() 
-            => throw new System.NotImplementedException();
+            => throw new NotImplementedException();
 
         public IConsumer CreateConsumer()
         {
@@ -44,11 +42,11 @@ namespace Dromedary.Components.Process
                 return new ProcessConsumer(new ProcessWithFunc(_asyncProcess));
             }
 
-            var process = (IProcessor) _provider.GetRequiredService(_processType);
+            var process = (IProcessor) _activator.CreateInstance(_processType);
             return new ProcessConsumer(process);
         }
 
         public void ConfigureProperties(IDictionary<string, object> option) 
-            => throw new System.NotImplementedException();
+            => throw new NotImplementedException();
     }
 }

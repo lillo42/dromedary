@@ -1,6 +1,4 @@
 using System;
-using System.Linq;
-using AutoFixture;
 using Dromedary.Builder;
 using Dromedary.Exceptions;
 using Dromedary.Factories;

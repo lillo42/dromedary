@@ -13,9 +13,7 @@ namespace Dromedary.Components.Process
             _func = func ?? throw new ArgumentNullException(nameof(func));
         }
 
-        public ValueTask ExecuteAsync(IExchange exchange, CancellationToken cancellationToken = default)
-        {
-            return new ValueTask(_func(exchange));
-        }
+        public ValueTask ExecuteAsync(IExchange exchange, CancellationToken cancellationToken = default) 
+            => new ValueTask(_func(exchange));
     }
 }

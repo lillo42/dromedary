@@ -27,7 +27,7 @@ namespace Dromedary.Builder
         {
             Service = service;
             
-            Service.TryAddSingleton<IActivator, DefaultActivator>();
+            Service.TryAddScoped<IActivator, DefaultActivator>();
             Service.TryAddSingleton<IExchangeIdGenerator, DefaultIdGenerator>();
             Service.TryAddSingleton<IMessageIdGenerator, DefaultIdGenerator>();
 

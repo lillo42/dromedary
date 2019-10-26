@@ -1,16 +1,17 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Dromedary.Activator;
 
 namespace Dromedary.Components.Process
 {
     public class ProcessDromedaryComponent : IProcessDromedaryComponent
     {
-        private readonly IServiceProvider _provider;
+        private readonly IActivator _activator;
 
-        public ProcessDromedaryComponent(IServiceProvider provider)
+        public ProcessDromedaryComponent(IActivator provider)
         {
-            _provider = provider ?? throw new ArgumentNullException(nameof(provider));
+            _activator = provider ?? throw new ArgumentNullException(nameof(provider));
         }
 
         public virtual Type ProcessType { get; set; }
@@ -19,7 +20,7 @@ namespace Dromedary.Components.Process
 
         public IEndpoint CreateEndpoint()
         {
-            return new ProcessEndpoint(_provider, ProcessType, Process, AsyncProcess);
+            return new ProcessEndpoint(_activator, ProcessType, Process, AsyncProcess);
         }
 
         public void ConfigureProperties(Action<IDromedaryComponent> config)
