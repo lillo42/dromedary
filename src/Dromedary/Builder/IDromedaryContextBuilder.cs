@@ -7,7 +7,6 @@ namespace Dromedary.Builder
     public interface IDromedaryContextBuilder
     {
         IServiceCollection Service { get; }
-        
         IEnumerable<Action<IRouteBuilder>> RoutesBuilder { get; }
 
         #region Set
@@ -19,43 +18,95 @@ namespace Dromedary.Builder
         #region Component
 
         IDromedaryContextBuilder AddComponent<TService>()
-            where TService : class;
+            where TService : class
+        {
+            Service.AddTransient<TService>();
+            return this;
+        }
 
         IDromedaryContextBuilder AddComponent<TService>(ServiceLifetime lifetime)
-            where TService : class;
+        {
+            Service.Add(new ServiceDescriptor(typeof(TService), typeof(TService), lifetime));
+            return this;
+        }
         
         IDromedaryContextBuilder AddComponent<TService>(Func<IServiceProvider, TService> implement)
-            where TService : class;
-        IDromedaryContextBuilder AddComponent<TService>(Func<IServiceProvider, TService> implement, ServiceLifetime lifetime)
-            where TService : class;
+            where TService : class
+        {
+            Service.AddTransient(implement);
+            return this;
+        }
         
+        IDromedaryContextBuilder AddComponent<TService>(Func<IServiceProvider, TService> implement, ServiceLifetime lifetime)
+            where TService : class
+        {
+            Service.Add(new ServiceDescriptor(typeof(TService), implement, lifetime));
+            return this;
+        }
+
         IDromedaryContextBuilder AddComponent<TService, TImplementation>()
             where TService : class, IDromedaryComponent
-            where TImplementation : class, TService;
-        
+            where TImplementation : class, TService
+        {
+            Service.AddTransient<TService, TImplementation>();
+            return this;
+        }
+
         IDromedaryContextBuilder AddComponent<TService, TImplementation>(ServiceLifetime lifetime)
             where TService : class, IDromedaryComponent
-            where TImplementation : class, TService;
+            where TImplementation : class, TService
+        {
+            Service.Add(new ServiceDescriptor(typeof(TService), typeof(TImplementation), lifetime));
+            return this;
+        }
         
         IDromedaryContextBuilder AddComponent<TService, TImplementation>(TImplementation implementation)
             where TService : class, IDromedaryComponent
-            where TImplementation : class, TService;
+            where TImplementation : class, TService
+        {
+            Service.Add(new ServiceDescriptor(typeof(TService), implementation));
+            return this;
+        }
 
         IDromedaryContextBuilder AddComponent<TService, TImplementation>(Func<IServiceProvider, TImplementation> implementation)
             where TService : class, IDromedaryComponent
-            where TImplementation : class, TService;
+            where TImplementation : class, TService
+        {
+            Service.AddTransient<TService, TImplementation>(implementation);
+            return this;
+        }
         
         IDromedaryContextBuilder AddComponent<TService, TImplementation>(Func<IServiceProvider, TImplementation> implementation, ServiceLifetime lifetime)
             where TService : class, IDromedaryComponent
-            where TImplementation : class, TService;
+            where TImplementation : class, TService
+        {
+            Service.Add(new ServiceDescriptor(typeof(TService), implementation));
+            return this;
+        }
 
-        IDromedaryContextBuilder AddComponent(Type component);
+        IDromedaryContextBuilder AddComponent(Type component)
+        {
+            Service.Add(new ServiceDescriptor(component, component));
+            return this;
+        }
+
+        IDromedaryContextBuilder AddComponent(Type component, ServiceLifetime lifetime)
+        {
+            Service.Add(new ServiceDescriptor(component, component, lifetime));
+            return this;
+        }
         
-        IDromedaryContextBuilder AddComponent(Type component, ServiceLifetime lifetime);
+        IDromedaryContextBuilder AddComponent(Type component, Type implementation)
+        {
+            Service.Add(new ServiceDescriptor(component, implementation));
+            return this;
+        }
         
-        IDromedaryContextBuilder AddComponent(Type component, Type implementation);
-        
-        IDromedaryContextBuilder AddComponent(Type component, Type implementation, ServiceLifetime lifetime);
+        IDromedaryContextBuilder AddComponent(Type component, Type implementation, ServiceLifetime lifetime)
+        {
+            Service.Add(new ServiceDescriptor(component, implementation, lifetime));
+            return this;
+        }
         
         #endregion
 

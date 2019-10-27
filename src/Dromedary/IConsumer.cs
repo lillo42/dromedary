@@ -1,7 +1,6 @@
 namespace Dromedary
 {
-    public interface IConsumer
+    public interface IConsumer : IProcessor
     {
-        IProcessor Processor { get; }
     }
 }

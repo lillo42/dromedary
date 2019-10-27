@@ -15,6 +15,11 @@ namespace Dromedary
     public interface IDromedaryComponent<T> : IDromedaryComponent
         where T : IEndpoint
     {
+        IEndpoint IDromedaryComponent.CreateEndpoint()
+        {
+            return CreateEndpoint();
+        }
+        
         new T CreateEndpoint();
     }
 }

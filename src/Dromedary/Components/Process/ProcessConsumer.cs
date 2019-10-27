@@ -1,12 +1,18 @@
+using System.Threading;
+using System.Threading.Tasks;
+
 namespace Dromedary.Components.Process
 {
     internal class ProcessConsumer : IConsumer
     {
+        private readonly IProcessor _processor;
+
         public ProcessConsumer(IProcessor processor)
         {
-            Processor = processor;
+            _processor = processor;
         }
 
-        public IProcessor Processor { get; }
+        public ValueTask ExecuteAsync(IExchange exchange, CancellationToken cancellationToken = default)
+            => _processor.ExecuteAsync(exchange, cancellationToken);
     }
 }

@@ -34,6 +34,8 @@ namespace Dromedary
             var producer = component.CreateEndpoint()
                 .CreateProducer();
 
+            producer.Factory = service.GetRequiredService<IExchangeFactory>();
+
             var channel = Channel.CreateUnbounded<IExchange>(new UnboundedChannelOptions
             {
                 SingleWriter = true,

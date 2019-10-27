@@ -9,14 +9,18 @@ namespace Dromedary
 
         IDictionary<string, object> Properties { get; set; }
         IMessage Message { get; set; }
-        bool HasProperties { get; }
+
+        bool HasProperties => Properties != null && Properties.Count > 0;
         
         Exception Exception { get; set; }
 
         T GetException<T>()
-            where T : Exception;
-        
-        bool IsFailed { get; }
+            where T : Exception
+        {
+            return Exception as T;
+        }
+
+        bool IsFailed => Exception != null;
         
         DateTime Created { get; }
     }

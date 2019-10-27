@@ -13,13 +13,9 @@ namespace Dromedary
         public virtual  string Id { get; }
         public virtual IDictionary<string, object> Properties { get; set; } = new Dictionary<string, object>();
         public virtual IMessage Message { get; set; }
-        public virtual bool HasProperties => Properties.Count > 0;
         public virtual Exception Exception { get; set; }
-        public virtual bool IsFailed => Exception != null;
+
         public virtual DateTime Created { get; } = DateTime.UtcNow;
-        
-        public virtual  T GetException<T>() where T : Exception 
-            => Exception as T;
         
         public virtual IExchange Clone()
         {

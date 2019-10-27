@@ -48,8 +48,7 @@ namespace Dromedary
             var component = (IDromedaryComponent)_service.GetRequiredService(statement.Component);
             ConfigureComponentAsync(statement, component);
             Current = component.CreateEndpoint()
-                .CreateConsumer()
-                .Processor;
+                .CreateConsumer();
             
             return true;
         }

@@ -5,6 +5,7 @@
 
     <Product>Dromedary</Product>
     <NeutralLanguage>en-US</NeutralLanguage>
+    <LangVersion>8</LangVersion>
 
     <PackageProjectUrl>https://github.com/lillo42/dromedary</PackageProjectUrl>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>

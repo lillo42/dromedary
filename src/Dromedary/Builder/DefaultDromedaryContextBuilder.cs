@@ -71,14 +71,11 @@ namespace Dromedary.Builder
         }
         #endregion
 
-        #region Component
+        /*#region Component
 
         public IDromedaryContextBuilder AddComponent<TService>()
-            where TService : class
-        {
-            Service.AddTransient<TService>();
-            return this;
-        }
+            where TService : class 
+            => (this as IDromedaryContextBuilder).AddComponent<TService>();
 
         public IDromedaryContextBuilder AddComponent<TService>(ServiceLifetime lifetime)
             where TService : class
@@ -165,13 +162,13 @@ namespace Dromedary.Builder
             return this;
         }
 
+        #endregion*/
+        
         public IDromedaryContextBuilder AddRoute(Action<IRouteBuilder> builder)
         {
             _routes.Add(builder);
             return this;
         }
-
-        #endregion
 
         #region Builder
 
