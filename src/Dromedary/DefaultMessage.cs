@@ -13,26 +13,13 @@ namespace Dromedary
 
         public virtual string Id { get; }
         public virtual IExchange Exchange { get; }
-        public virtual bool HasHeader => Headers.Count > 0;
-        public virtual IDictionary<string, object> Headers { get; set; }
+        public virtual IDictionary<string, object> Headers { get; set; } = new Dictionary<string, object>();
         public virtual object Body { get; set; }
-
-        public virtual T GetBody<T>()
-        {
-            var type = typeof(T);
-            if (type.IsInstanceOfType(Body))
-            {
-                return (T)Body;
-            }
-            
-            return  (T) TypeDescriptor.GetConverter(type).ConvertFrom(Body);
-        }
 
         protected virtual bool Equals(DefaultMessage other)
         {
             return Id == other.Id 
-                   && Equals(Exchange, other.Exchange) 
-                   && HasHeader == other.HasHeader 
+                   && Equals(Exchange, other.Exchange)
                    && Equals(Headers, other.Headers) 
                    && Equals(Body, other.Body);
         }
@@ -66,7 +53,6 @@ namespace Dromedary
             {
                 var hashCode = (Id != null ? Id.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ (Exchange != null ? Exchange.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ HasHeader.GetHashCode();
                 hashCode = (hashCode * 397) ^ (Headers != null ? Headers.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ (Body != null ? Body.GetHashCode() : 0);
                 return hashCode;

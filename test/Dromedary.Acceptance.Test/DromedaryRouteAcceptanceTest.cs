@@ -1,20 +1,21 @@
-    using System.Collections.Generic;
+using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
-    using Dromedary.Builder;
-    using Dromedary.Factories;
-    using NSubstitute;
-    using Xunit;
+using Dromedary.Builder;
+using Dromedary.Factories;
+using Xunit;
 
-    namespace Dromedary.Acceptance.Test
+namespace Dromedary.Acceptance.Test
 {
     public class DromedaryRouteAcceptanceTest
     {
-        [Fact]
+        [Fact(Timeout = 1_000)]
         public async Task Execute_With_From_To()
         {
-            var context = new DefaultDromedaryContextBuilder()
+            IDromedaryContextBuilder builder = new DefaultDromedaryContextBuilder();
+            var context = builder
                 .AddComponent<FakeComponent>()
                 .Build();
             
@@ -26,11 +27,14 @@ using System.Threading.Tasks;
                 {
                     builder.From<FakeComponent>(c =>
                         {
-                            c.Execute = from;
+                            c.Logs = from;
+                            c.Text = "From";
+                            c.MaxExchangeGenerated = 1;
                         })
                         .To<FakeComponent>(c =>
                         {
-                            c.Execute = to;
+                            c.Logs = to;
+                            c.Text = "To";
                         });
                 });
             
@@ -48,97 +52,101 @@ using System.Threading.Tasks;
         }
     }
 
-    public class ControlFake
+    internal class FakeComponent : IDromedaryComponent
     {
-        public bool ShouldGenerator { get; set; }
+        public ICollection<string> Logs { get; set; }
+        public string Text { get; set; }
+        public int MaxExchangeGenerated { get; set; }
+        public IEndpoint CreateEndpoint() 
+            => new FakeEndpoint(Logs, Text, MaxExchangeGenerated);
+
+        public void ConfigureProperties(Action<IDromedaryComponent> config)
+        {
+            if (config == null)
+            {
+                throw new ArgumentNullException(nameof(config));
+            }
+
+            config(this);
+        }
+
+        public async Task ConfigurePropertiesAsync(Func<IDromedaryComponent, Task> config)
+        {
+            if (config == null)
+            {
+                throw new ArgumentNullException(nameof(config));
+            }
+
+            await config(this);
+        }
+
+        public void ConfigureProperties(IDictionary<string, object> config)
+        {
+            
+        }
     }
     
-    public class FakeComponent : IDromedaryComponent
-    {
-        public ICollection<string> Execute { get; set; }
-        public ControlFake ControlFake { get; set; }
-        public IEndpoint CreateEndpoint()
-        {
-            return new FakeEndpoint(Execute);
-        }
-    }
-        
     internal class FakeEndpoint : IEndpoint
     {
-        private readonly ICollection<string> _execute;
-        private readonly ControlFake _control;
+        private readonly ICollection<string> _logs;
+        private readonly string _text;
+        private readonly int _maxExchangeGenerated;
 
-        public FakeEndpoint(ICollection<string> execute, ControlFake control)
+        public FakeEndpoint(ICollection<string> logs, string text, int maxExchangeGenerated)
         {
-            _execute = execute;
-            _control = control;
+            _logs = logs;
+            _text = text;
+            _maxExchangeGenerated = maxExchangeGenerated;
         }
 
-        public IProducer CreateProducer()
-        {
-            return new FakeProducer(, _control);
-        }
+        public IProducer CreateProducer() 
+            => new FakeProducer(_text, _logs, _maxExchangeGenerated);
 
-        public IConsumer CreateConsumer()
-        {
-            return new FakeConsumer(_execute);
-        }
-
-        public void ConfigureProperties(IDictionary<string, object> option)
-        {
-            throw new System.NotImplementedException();
-        }
+        public IConsumer CreateConsumer() 
+            => new FakeConsumer(_logs, _text);
     }
-        
+    
     internal class FakeProducer : IProducer
     {
-        private readonly ControlFake _control;
-        private readonly IExchangeFactory _factory;
+        private readonly ICollection<string> _logs;
+        private readonly string _text;
+        private readonly int _maxExchangeGenerated;
 
-        public FakeProducer(ControlFake control, IExchangeFactory factory)
+        public FakeProducer(string text, ICollection<string> logs, int maxExchangeGenerated)
         {
-            _control = control;
-            _factory = factory;
+            _text = text;
+            _logs = logs;
+            _maxExchangeGenerated = maxExchangeGenerated;
         }
+
+        public IExchangeFactory Factory { get; set; }
 
         public async Task ExecuteAsync(ChannelWriter<IExchange> channel, CancellationToken cancellationToken = default)
         {
-            while (cancellationToken.IsCancellationRequested)
+            int counter = 0;
+            while (_maxExchangeGenerated <  counter && !cancellationToken.IsCancellationRequested)
             {
-                if (_control.ShouldGenerator)
-                {
-                    await channel.WriteAsync(_factory.Create(), cancellationToken);
-                }
-
-                await Task.Delay(100);
+                _logs.Add(_text);
+                await channel.WriteAsync(Factory.Create(), cancellationToken);
+                counter++;
             }
         }
     }
-        
+
     internal class FakeConsumer : IConsumer
     {
-        private readonly ICollection<string> _execute;
+        private readonly ICollection<string> _logs;
+        private readonly string _text;
 
-        public FakeConsumer(ICollection<string> execute)
+        public FakeConsumer(ICollection<string> logs, string text)
         {
-            _execute = execute;
-        }
-
-        public IProcessor Processor => new FakeProcessor(_execute);
-    }
-
-    internal class FakeProcessor : IProcessor
-    {
-        private readonly ICollection<string> _execute;
-
-        public FakeProcessor(ICollection<string> execute)
-        {
-            _execute = execute;
+            _logs = logs;
+            _text = text;
         }
 
         public ValueTask ExecuteAsync(IExchange exchange, CancellationToken cancellationToken = default)
         {
-            _execute.Add(exchange.Message.Body.ToString());
+            _logs.Add(_text);
             return new ValueTask();
         }
     }

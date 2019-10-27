@@ -1,27 +1,19 @@
-using System;
-using Dromedary.Activator;
-using Dromedary.Factories;
-
 namespace Dromedary.Component.Console
 {
     public class ConsoleEndpoint : IEndpoint
     {
-        private readonly IActivator _service;
-        public ConsoleEndpoint(IActivator activator)
+        private static readonly ConsoleConsumer _consumer = new ConsoleConsumer();
+        private readonly string _promptMessage;
+
+        public ConsoleEndpoint(string promptMessage)
         {
-            _service = activator ?? throw new ArgumentNullException(nameof(activator));
+            _promptMessage = promptMessage;
         }
 
-        public string PromptMessage { get; set; }
-
         public IProducer CreateProducer()
-            => new ConsoleProducer(
-                _service.CreateInstance<IExchangeFactory>())
-            {
-                PromptMessage = PromptMessage
-            };
+            => new ConsoleProducer(_promptMessage);
 
-        public IConsumer CreateConsumer() 
-            => new ConsoleConsumer();
+        public IConsumer CreateConsumer()
+            => _consumer;
     }
 }

@@ -57,6 +57,7 @@ namespace Dromedary.Builder
         {
             AddNode(_statementFactory.Create(Statement.From, componentType, configure));
             return this;
+            
         }
 
         public IRouteBuilder From<T>(Func<T, Task> configure) 

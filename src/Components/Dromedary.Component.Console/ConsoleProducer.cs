@@ -9,23 +9,23 @@ namespace Dromedary.Component.Console
 {
     public class ConsoleProducer : IProducer
     {
-        private readonly IExchangeFactory _exchangeFactory;
+        private readonly string _promptMessage;
 
-        public ConsoleProducer(IExchangeFactory exchangeFactory)
+        public ConsoleProducer(string promptMessage)
         {
-            _exchangeFactory = exchangeFactory ?? throw new ArgumentNullException(nameof(exchangeFactory));
+            _promptMessage = promptMessage;
         }
 
-        public string PromptMessage { get; set; }
-        
+        public IExchangeFactory Factory { get; set; }
+
         public async Task ExecuteAsync(ChannelWriter<IExchange> channel, CancellationToken cancellationToken = default)
         {
             while (!cancellationToken.IsCancellationRequested)
             {
-                Write(PromptMessage);
+                Write(_promptMessage);
 
                 var input = ReadLine();
-                var exchange = _exchangeFactory.Create();
+                var exchange = Factory.Create();
                 exchange.Message.Body = input;
 
                 await channel.WriteAsync(exchange, cancellationToken)
