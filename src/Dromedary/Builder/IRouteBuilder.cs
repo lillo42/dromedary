@@ -46,8 +46,8 @@ namespace Dromedary.Builder
         IRouteBuilder Process<T>()
             where T : IProcessor;
         IRouteBuilder Process(Type process);
-        IRouteBuilder Processor(Action<IExchange> process);
-        IRouteBuilder Processor(Func<IExchange, Task> process);
+        IRouteBuilder Process(Action<IExchange> process);
+        IRouteBuilder Process(Func<IExchange, Task> process);
         #endregion
 
         #region Build

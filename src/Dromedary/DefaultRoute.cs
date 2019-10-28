@@ -72,34 +72,40 @@ namespace Dromedary
 
         private async Task ConsumeAsync(IServiceProvider service, ChannelReader<IExchange> reader, CancellationToken cancellationToken)
         {
-            while (await reader.WaitToReadAsync(cancellationToken) & !cancellationToken.IsCancellationRequested)
+            try
             {
-                if (reader.TryRead(out var exchange))
+                while (await reader.WaitToReadAsync(cancellationToken) & !cancellationToken.IsCancellationRequested)
                 {
-                    using (var scope = service.CreateScope())
+                    if (reader.TryRead(out var exchange))
                     {
-                        try
+                        using (var scope = service.CreateScope())
                         {
-                            var resolver = scope.ServiceProvider.GetRequiredService<IExchangeResolver>();
-                            resolver.Exchange = exchange;
-                            var factory = scope.ServiceProvider.GetRequiredService<IChannelFactory>();
-                            var channel = factory.Create(RouteGraph);
-                            foreach (var process in channel)
+                            try
                             {
-                                await process.ExecuteAsync(exchange, cancellationToken);
-                            
-                                if (cancellationToken.IsCancellationRequested)
+                                var resolver = scope.ServiceProvider.GetRequiredService<IExchangeResolver>();
+                                resolver.Exchange = exchange;
+                                var factory = scope.ServiceProvider.GetRequiredService<IChannelFactory>();
+                                var channel = factory.Create(RouteGraph);
+                                foreach (var process in channel)
                                 {
-                                    break;
+                                    await process.ExecuteAsync(exchange, cancellationToken);
+                            
+                                    if (cancellationToken.IsCancellationRequested)
+                                    {
+                                        break;
+                                    }
                                 }
                             }
-                        }
-                        catch (Exception e)
-                        {
-                            exchange.Exception = e;
+                            catch (Exception e)
+                            {
+                                exchange.Exception = e;
+                            }
                         }
                     }
                 }
+            }
+            catch (OperationCanceledException)
+            {
             }
         }
 

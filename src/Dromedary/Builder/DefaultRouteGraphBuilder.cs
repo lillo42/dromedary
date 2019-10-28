@@ -29,6 +29,7 @@ namespace Dromedary.Builder
                     _root = _factory.Create(statement);
                     _currentNode = _root;
                     break;
+                case Statement.Process:
                 case Statement.To:
                     if (_currentNode == null)
                     {

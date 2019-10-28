@@ -11,7 +11,7 @@ namespace Dromedary.Factories
         public DefaultExchangeFactory(IExchangeIdGenerator generator, IMessageFactory messageFactory)
         {
             _generator = generator ?? throw new ArgumentNullException(nameof(generator));
-            _messageFactory = messageFactory;
+            _messageFactory = messageFactory ?? throw new ArgumentNullException(nameof(messageFactory));
         }
 
         public IExchange Create() 

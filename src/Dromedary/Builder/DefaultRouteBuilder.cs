@@ -135,7 +135,7 @@ namespace Dromedary.Builder
             return this;
         }
 
-        public IRouteBuilder Processor(Action<IExchange> process)
+        public IRouteBuilder Process(Action<IExchange> process)
         {
             AddNode(_statementFactory.Create<IProcessDromedaryComponent>(Statement.Process, p =>
             {
@@ -144,7 +144,7 @@ namespace Dromedary.Builder
             return this;
         }
 
-        public IRouteBuilder Processor(Func<IExchange, Task> process)
+        public IRouteBuilder Process(Func<IExchange, Task> process)
         {
             AddNode(_statementFactory.Create<IProcessDromedaryComponent>(Statement.Process, p =>
             {
