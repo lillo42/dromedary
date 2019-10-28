@@ -21,15 +21,15 @@ namespace Dromedary.Statements
         
         public Statement Statement { get; }
         public Type Component { get; }
-        public Action<IDromedaryComponent> ConfigureComponent { get; }
-        public Func<IDromedaryComponent, Task> ConfigureComponentAsync { get; }
+        public Action<IDromedaryComponent>? ConfigureComponent { get; }
+        public Func<IDromedaryComponent, Task>? ConfigureComponentAsync { get; }
     }
 
     public class DefaultStatement<T> : IStatement<T>
         where T : IDromedaryComponent
     {
-        private readonly Action<IDromedaryComponent> _configureComponent;
-        private readonly Func<IDromedaryComponent, Task> _configureComponentAsync;
+        private readonly Action<IDromedaryComponent>? _configureComponent;
+        private readonly Func<IDromedaryComponent, Task>? _configureComponentAsync;
         public DefaultStatement(Statement statement, Action<T> configureComponent)
         {
             Statement = statement;
@@ -47,12 +47,12 @@ namespace Dromedary.Statements
         public Statement Statement { get; }
         public Type Component { get; } = typeof(T);
         
-        public Action<T> ConfigureComponent { get; }
+        public Action<T>? ConfigureComponent { get; }
 
-        public Func<T, Task> ConfigureComponentAsync { get; }
+        public Func<T, Task>? ConfigureComponentAsync { get; }
 
-        Action<IDromedaryComponent> IStatement.ConfigureComponent => _configureComponent;
+        Action<IDromedaryComponent>? IStatement.ConfigureComponent => _configureComponent;
 
-        Func<IDromedaryComponent, Task> IStatement.ConfigureComponentAsync => _configureComponentAsync;
+        Func<IDromedaryComponent, Task>? IStatement.ConfigureComponentAsync => _configureComponentAsync;
     }
 }

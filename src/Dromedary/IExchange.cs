@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Dromedary
 {
@@ -7,14 +8,15 @@ namespace Dromedary
     {
         string Id { get; }
 
-        IDictionary<string, object> Properties { get; set; }
-        IMessage Message { get; set; }
+        IDictionary<string, object>? Properties { get; set; }
+        IMessage? Message { get; set; }
 
         bool HasProperties => Properties != null && Properties.Count > 0;
         
-        Exception Exception { get; set; }
+        Exception? Exception { get; set; }
 
-        T GetException<T>()
+        [return: MaybeNull]
+        T? GetException<T>()
             where T : Exception
         {
             return Exception as T;

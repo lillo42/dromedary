@@ -8,9 +8,9 @@ namespace Dromedary.Components.Process
     internal class ProcessEndpoint : IEndpoint
     {
         private readonly IActivator _activator;
-        private readonly Type _processType;
-        private readonly Action<IExchange> _process;
-        private readonly Func<IExchange, Task> _asyncProcess;
+        private readonly Type? _processType;
+        private readonly Action<IExchange>? _process;
+        private readonly Func<IExchange, Task>? _asyncProcess;
         public ProcessEndpoint(IActivator provider, 
             Type processType, 
             Action<IExchange> process, 

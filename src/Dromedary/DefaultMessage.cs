@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 
@@ -7,14 +8,14 @@ namespace Dromedary
     {
         public DefaultMessage(string id, IExchange exchange)
         {
-            Id = id;
-            Exchange = exchange;
+            Id = id ?? throw new ArgumentNullException(nameof(id));
+            Exchange = exchange ?? throw new ArgumentNullException(nameof(exchange));
         }
 
         public virtual string Id { get; }
         public virtual IExchange Exchange { get; }
-        public virtual IDictionary<string, object> Headers { get; set; } = new Dictionary<string, object>();
-        public virtual object Body { get; set; }
+        public virtual IDictionary<string, object>? Headers { get; set; } = new Dictionary<string, object>();
+        public virtual object? Body { get; set; }
 
         protected virtual bool Equals(DefaultMessage other)
         {

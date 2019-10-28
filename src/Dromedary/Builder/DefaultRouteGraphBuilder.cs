@@ -8,8 +8,8 @@ namespace Dromedary.Builder
     public class DefaultRouteGraphBuilder : IRouteGraphBuilder
     {
         private readonly IRouteNodeFactory _factory;
-        private IRouteNode _root;
-        private IRouteNode _currentNode;
+        private IRouteNode? _root;
+        private IRouteNode? _currentNode;
 
         public DefaultRouteGraphBuilder(IRouteNodeFactory factory)
         {

@@ -19,10 +19,5 @@ namespace Dromedary.Exceptions
         {
             Statement = statement;
         }
-        
-        protected DromedaryRouteGraphBuilderException(SerializationInfo info, StreamingContext context) 
-            : base(info, context)
-        {
-        }
     }
 }

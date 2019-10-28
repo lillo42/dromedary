@@ -60,8 +60,14 @@ namespace Dromedary
                 statement.ConfigureComponent(component);
                 return new ValueTask();
             }
+
+            if (statement.ConfigureComponentAsync != null)
+            {
+                return new ValueTask(statement.ConfigureComponentAsync(component));
+            }
             
-            return new ValueTask(statement.ConfigureComponentAsync(component));
+            //TODO: Review this exception
+            throw new NotSupportedException();
         }
 
         private static IRouteNode NextNode(IRouteNode current) 

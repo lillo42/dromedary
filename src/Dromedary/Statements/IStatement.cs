@@ -7,14 +7,14 @@ namespace Dromedary.Statements
     {
         Statement Statement { get; }
         Type Component { get; }
-        Action<IDromedaryComponent> ConfigureComponent { get; }
-        Func<IDromedaryComponent, Task> ConfigureComponentAsync { get; }
+        Action<IDromedaryComponent>? ConfigureComponent { get; }
+        Func<IDromedaryComponent, Task>? ConfigureComponentAsync { get; }
     }
 
     public interface IStatement<T> : IStatement
         where T : IDromedaryComponent
     {
-        new Action<T> ConfigureComponent { get; }
-        new Func<T, Task> ConfigureComponentAsync { get; }
+        new Action<T>? ConfigureComponent { get; }
+        new Func<T, Task>? ConfigureComponentAsync { get; }
     }
 }

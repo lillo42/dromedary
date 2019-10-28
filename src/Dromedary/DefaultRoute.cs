@@ -59,8 +59,14 @@ namespace Dromedary
                 statement.ConfigureComponent(component);
                 return new ValueTask();
             }
+
+            if (statement.ConfigureComponentAsync != null)
+            {
+                return new ValueTask(statement.ConfigureComponentAsync(component));
+            }
             
-            return new ValueTask(statement.ConfigureComponentAsync(component));
+            //TODO: Review this Exception
+            throw new NotSupportedException();
         }
 
 
@@ -90,7 +96,7 @@ namespace Dromedary
                         }
                         catch (Exception e)
                         {
-                            
+                            exchange.Exception = e;
                         }
                     }
                 }

@@ -14,7 +14,7 @@ namespace Dromedary.Builder
         private readonly ICollection<Action<IRouteBuilder>> _routes = new List<Action<IRouteBuilder>>();
 
         private string _id = Guid.NewGuid().ToString();
-        private string _name;
+        private string? _name;
         private string _version = "1.0.0";
 
         public DefaultDromedaryContextBuilder()

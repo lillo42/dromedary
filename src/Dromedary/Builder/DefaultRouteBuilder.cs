@@ -13,7 +13,7 @@ namespace Dromedary.Builder
         private readonly IRouteGraphBuilder _graphBuilder;
 
         private string _id = Guid.NewGuid().ToString();
-        private string _description;
+        private string? _description;
 
         public DefaultRouteBuilder(IDromedaryContext context, 
             IStatementFactory statementFactory, 
