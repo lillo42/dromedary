@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>$(DromedaryAppTargetFramework)</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Components\Dromedary.Component.Console\Dromedary.Component.Console.csproj" />
+    <ProjectReference Include="..\..\src\Dromedary\Dromedary.csproj" />
+  </ItemGroup>
+
+</Project>

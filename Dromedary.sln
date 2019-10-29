@@ -11,7 +11,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{C99A1A4F-5
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dromedary.Test", "test\Dromedary.Test\Dromedary.Test.csproj", "{199CFB88-056A-4F65-AE21-9A5C18940D0B}"
 EndProject
-<<<<<<< HEAD
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Itens", "Solution Itens", "{AAC4B61E-D2B4-43D8-9BE3-89DF4757FE12}"
 	ProjectSection(SolutionItems) = preProject
 		Directory.Build.props = Directory.Build.props
@@ -23,6 +22,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dromedary.Component.Console", "src\Components\Dromedary.Component.Console\Dromedary.Component.Console.csproj", "{29743D84-0876-43F2-B06F-D949A5C7A962}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dromedary.Acceptance.Test", "test\Dromedary.Acceptance.Test\Dromedary.Acceptance.Test.csproj", "{CE346601-5330-4230-AD94-93F605553D16}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{36E39666-467F-46AB-8C18-747725F2B7C7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dromedary.Sample.Console", "samples\Dromedary.Sample.Console\Dromedary.Sample.Console.csproj", "{49078031-BC5F-4A3C-9D94-1700FFADA01B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -85,6 +88,18 @@ Global
 		{CE346601-5330-4230-AD94-93F605553D16}.Release|x64.Build.0 = Release|Any CPU
 		{CE346601-5330-4230-AD94-93F605553D16}.Release|x86.ActiveCfg = Release|Any CPU
 		{CE346601-5330-4230-AD94-93F605553D16}.Release|x86.Build.0 = Release|Any CPU
+		{49078031-BC5F-4A3C-9D94-1700FFADA01B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49078031-BC5F-4A3C-9D94-1700FFADA01B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49078031-BC5F-4A3C-9D94-1700FFADA01B}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{49078031-BC5F-4A3C-9D94-1700FFADA01B}.Debug|x64.Build.0 = Debug|Any CPU
+		{49078031-BC5F-4A3C-9D94-1700FFADA01B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{49078031-BC5F-4A3C-9D94-1700FFADA01B}.Debug|x86.Build.0 = Debug|Any CPU
+		{49078031-BC5F-4A3C-9D94-1700FFADA01B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{49078031-BC5F-4A3C-9D94-1700FFADA01B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{49078031-BC5F-4A3C-9D94-1700FFADA01B}.Release|x64.ActiveCfg = Release|Any CPU
+		{49078031-BC5F-4A3C-9D94-1700FFADA01B}.Release|x64.Build.0 = Release|Any CPU
+		{49078031-BC5F-4A3C-9D94-1700FFADA01B}.Release|x86.ActiveCfg = Release|Any CPU
+		{49078031-BC5F-4A3C-9D94-1700FFADA01B}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{BB9A7EA6-77E4-4C09-8582-16A015230343} = {BDB2D447-2341-456B-8962-E78E8FA6DD97}
@@ -92,5 +107,6 @@ Global
 		{9684322C-E496-476C-850C-F2563452EB9E} = {BDB2D447-2341-456B-8962-E78E8FA6DD97}
 		{29743D84-0876-43F2-B06F-D949A5C7A962} = {9684322C-E496-476C-850C-F2563452EB9E}
 		{CE346601-5330-4230-AD94-93F605553D16} = {C99A1A4F-5F72-4E57-9EBB-E1F93F1152B5}
+		{49078031-BC5F-4A3C-9D94-1700FFADA01B} = {36E39666-467F-46AB-8C18-747725F2B7C7}
 	EndGlobalSection
 EndGlobal
