@@ -16,7 +16,6 @@ namespace Dromedary.Test.Builder
     public class DefaultRouteBuilderTest
     {
         private readonly Fixture _fixture;
-        private readonly IDromedaryContext _context;
         private readonly IStatementFactory _statementFactory;
         private readonly IRouteGraphBuilder _graphBuilder;
         private readonly IRouteBuilder _builder;
@@ -25,28 +24,20 @@ namespace Dromedary.Test.Builder
         {
             _fixture = new Fixture();
             
-            _context = Substitute.For<IDromedaryContext>();
             _statementFactory = Substitute.For<IStatementFactory>();
             _graphBuilder = Substitute.For<IRouteGraphBuilder>();
             
-            _builder = new DefaultRouteBuilder(_context,
-                _statementFactory,
+            _builder = new DefaultRouteBuilder(_statementFactory,
                 _graphBuilder);
         }
 
         [Fact]
-        public void Create_Should_Throw_When_ContextIsNull() 
-            => Throws<ArgumentNullException>(() => new DefaultRouteBuilder(null, null,
-                null));
-
-        [Fact]
         public void Create_Should_Throw_When_StatementFactoryIsNull() 
-            => Throws<ArgumentNullException>(() => new DefaultRouteBuilder(_context,
-                null, null));
+            => Throws<ArgumentNullException>(() => new DefaultRouteBuilder(null, null));
         
         [Fact]
         public void Create_Should_Throw_When_GraphBuilderIsNull() 
-            => Throws<ArgumentNullException>(() => new DefaultRouteBuilder(_context, _statementFactory, null));
+            => Throws<ArgumentNullException>(() => new DefaultRouteBuilder(_statementFactory, null));
         
         [Fact]
         public void Build_Should_SetId_When_IdIsSet()
@@ -65,9 +56,6 @@ namespace Dromedary.Test.Builder
             route.Id.Should().Be(id);
             
             route.Description.Should().BeNull();
-
-            route.Context.Should().NotBeNull();
-            route.Context.Should().Be(_context);
 
             route.RouteGraph.Should().NotBeNull();
             route.RouteGraph.Should().Be(graph);
@@ -98,8 +86,6 @@ namespace Dromedary.Test.Builder
             route.Description.Should().NotBeNullOrEmpty();
             route.Description.Should().Be(description);
 
-            route.Context.Should().NotBeNull();
-            route.Context.Should().Be(_context);
 
             route.RouteGraph.Should().NotBeNull();
             route.RouteGraph.Should().Be(graph);
@@ -221,7 +207,7 @@ namespace Dromedary.Test.Builder
         
         internal class FakeComponent : IFakeComponent
         {
-            public FakeComponent(IDromedaryContext context)
+            public FakeComponent()
             {
             }
 

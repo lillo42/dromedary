@@ -14,7 +14,7 @@ namespace Dromedary.Components.Process
             _activator = provider ?? throw new ArgumentNullException(nameof(provider));
         }
 
-        public virtual Type? ProcessType { get; set; }
+        public Type? ProcessType { get; set; }
         public Action<IExchange>? Process { get; set; }
         public Func<IExchange, Task>? AsyncProcess { get; set; }
 

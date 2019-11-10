@@ -11,7 +11,6 @@ namespace Dromedary.Acceptance.Test
     public partial class DromedaryRouteAcceptanceTest
     {
         private readonly Fixture _fixture;
-        private readonly IDromedaryContextBuilder _builder;
 
         public DromedaryRouteAcceptanceTest()
         {

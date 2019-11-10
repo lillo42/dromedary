@@ -7,10 +7,8 @@ namespace Dromedary
     public interface IRoute : IDisposable
     {
         string Id { get; }
-        string Description { get; }
+        string? Description { get; }
         IRouteGraph RouteGraph { get; }
-        IDromedaryContext Context { get; }
-
         Task ExecuteAsync(IServiceProvider service, CancellationToken cancellationToken = default);
     }
 }

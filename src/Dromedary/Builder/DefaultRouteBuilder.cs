@@ -8,18 +8,16 @@ namespace Dromedary.Builder
 {
     public class DefaultRouteBuilder : IRouteBuilder
     {
-        private readonly IDromedaryContext _context;
         private readonly IStatementFactory _statementFactory;
         private readonly IRouteGraphBuilder _graphBuilder;
 
         private string _id = Guid.NewGuid().ToString();
         private string? _description;
 
-        public DefaultRouteBuilder(IDromedaryContext context, 
+        public DefaultRouteBuilder( 
             IStatementFactory statementFactory, 
             IRouteGraphBuilder graphBuilder)
         {
-            _context = context ?? throw new ArgumentNullException(nameof(context));
             _statementFactory = statementFactory ?? throw new ArgumentNullException(nameof(statementFactory));
             _graphBuilder = graphBuilder ?? throw new ArgumentNullException(nameof(graphBuilder));
         }
@@ -91,7 +89,7 @@ namespace Dromedary.Builder
         public IRouteBuilder To<T>(Action<T> configure) 
             where T : class, IDromedaryComponent
         {
-            AddNode(_statementFactory.Create<T>(Statement.To, configure));
+            AddNode(_statementFactory.Create(Statement.To, configure));
             return this;
         }
 
@@ -104,7 +102,7 @@ namespace Dromedary.Builder
         public IRouteBuilder To<T>(Func<T, Task> configure) 
             where T : class, IDromedaryComponent
         {
-            AddNode(_statementFactory.Create<T>(Statement.To, configure));
+            AddNode(_statementFactory.Create(Statement.To, configure));
             return this;
         }
 
@@ -160,7 +158,7 @@ namespace Dromedary.Builder
         #region Build
 
         public IRoute Build() 
-            => new DefaultRoute(_id, _description, _graphBuilder.Build(), _context);
+            => new DefaultRoute(_id, _description, _graphBuilder.Build());
 
         #endregion
     }

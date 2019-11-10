@@ -12,9 +12,9 @@ namespace Dromedary.Components.Process
         private readonly Action<IExchange>? _process;
         private readonly Func<IExchange, Task>? _asyncProcess;
         public ProcessEndpoint(IActivator provider, 
-            Type processType, 
-            Action<IExchange> process, 
-            Func<IExchange, Task> asyncProcess)
+            Type? processType, 
+            Action<IExchange>? process, 
+            Func<IExchange, Task>? asyncProcess)
         {
             _activator = provider ?? throw new ArgumentNullException(nameof(provider));
             _processType = processType;
@@ -23,7 +23,7 @@ namespace Dromedary.Components.Process
 
             if (processType == null && process == null && asyncProcess == null)
             {
-                throw new ArgumentException("all parameer are null");
+                throw new ArgumentException("all parameters are null");
             }
         }
 
@@ -42,8 +42,18 @@ namespace Dromedary.Components.Process
                 return new ProcessConsumer(new ProcessWithFunc(_asyncProcess));
             }
 
-            var process = (IProcessor) _activator.CreateInstance(_processType);
-            return new ProcessConsumer(process);
+            if (_processType != null)
+            {
+                var process = (IProcessor)_activator.CreateInstance(_processType);
+                if (process == null)
+                {
+                    throw new NotImplementedException();
+                }
+                
+                return new ProcessConsumer(process);
+            }
+            
+            throw new NotImplementedException();
         }
 
         public void ConfigureProperties(IDictionary<string, object> option) 

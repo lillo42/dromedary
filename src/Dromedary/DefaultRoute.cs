@@ -10,21 +10,24 @@ namespace Dromedary
 {
     public class DefaultRoute : IRoute
     {
-        public DefaultRoute(string id, string description, IRouteGraph routeGraph, IDromedaryContext context)
+        public DefaultRoute(string id, string? description, IRouteGraph routeGraph)
         {
             Id = id ?? throw new ArgumentNullException(nameof(id));
             Description = description;
             RouteGraph = routeGraph ?? throw new ArgumentNullException(nameof(routeGraph));
-            Context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
         public string Id { get; }
-        public string Description { get; }
+        public string? Description { get; }
         public IRouteGraph RouteGraph { get; }
-        public IDromedaryContext Context { get; }
-        
+
         public async Task ExecuteAsync(IServiceProvider service, CancellationToken cancellationToken = default)
         {
+            if (service == null)
+            {
+                throw new ArgumentNullException(nameof(service));
+            }
+
             var @from = RouteGraph.Root;
             var statement = from.Statement;
 
@@ -39,14 +42,13 @@ namespace Dromedary
             var channel = Channel.CreateUnbounded<IExchange>(new UnboundedChannelOptions
             {
                 SingleWriter = true,
-                SingleReader = false
+                SingleReader = false, 
             });
             
             var consumer = ConsumeAsync(service, channel, cancellationToken)
                 .ConfigureAwait(false);
             
-            var producerTask = producer.ExecuteAsync(channel.Writer, cancellationToken)
-                .ConfigureAwait(false);
+            var producerTask = Task.Run(() => producer.ExecuteAsync(channel.Writer, cancellationToken), cancellationToken);
 
             await producerTask;
             await consumer;
@@ -76,31 +78,31 @@ namespace Dromedary
             {
                 while (await reader.WaitToReadAsync(cancellationToken) & !cancellationToken.IsCancellationRequested)
                 {
-                    if (reader.TryRead(out var exchange))
+                    if (!reader.TryRead(out var exchange))
                     {
-                        using (var scope = service.CreateScope())
+                        continue;
+                    }
+
+                    using var scope = service.CreateScope();
+                    try
+                    {
+                        var resolver = scope.ServiceProvider.GetRequiredService<IExchangeResolver>();
+                        resolver.Exchange = exchange;
+                        var factory = scope.ServiceProvider.GetRequiredService<IChannelFactory>();
+                        var channel = factory.Create(RouteGraph);
+                        foreach (var process in channel)
                         {
-                            try
-                            {
-                                var resolver = scope.ServiceProvider.GetRequiredService<IExchangeResolver>();
-                                resolver.Exchange = exchange;
-                                var factory = scope.ServiceProvider.GetRequiredService<IChannelFactory>();
-                                var channel = factory.Create(RouteGraph);
-                                foreach (var process in channel)
-                                {
-                                    await process.ExecuteAsync(exchange, cancellationToken);
+                            await process.ExecuteAsync(exchange, cancellationToken);
                             
-                                    if (cancellationToken.IsCancellationRequested)
-                                    {
-                                        break;
-                                    }
-                                }
-                            }
-                            catch (Exception e)
+                            if (cancellationToken.IsCancellationRequested)
                             {
-                                exchange.Exception = e;
+                                break;
                             }
                         }
+                    }
+                    catch (Exception e)
+                    {
+                        exchange.Exception = e;
                     }
                 }
             }

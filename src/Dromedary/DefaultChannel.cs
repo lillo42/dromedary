@@ -19,11 +19,11 @@ namespace Dromedary
         {
             _graph = graph ?? throw new ArgumentNullException(nameof(graph));
             _exchange = exchange;
-            this._service = service;
+            _service = service;
             _currentNode =  _graph.Root;
         }
 
-        public virtual IProcessor Current { get; protected set; }
+        public virtual IProcessor? Current { get; protected set; }
 
         object IEnumerator.Current => Current;
 

@@ -16,9 +16,7 @@ namespace Dromedary
         where T : IEndpoint
     {
         IEndpoint IDromedaryComponent.CreateEndpoint()
-        {
-            return CreateEndpoint();
-        }
+            => CreateEndpoint();
         
         new T CreateEndpoint();
     }

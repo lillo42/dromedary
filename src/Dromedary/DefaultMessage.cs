@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 
 namespace Dromedary
 {
@@ -17,16 +16,26 @@ namespace Dromedary
         public virtual IDictionary<string, object>? Headers { get; set; } = new Dictionary<string, object>();
         public virtual object? Body { get; set; }
 
-        protected virtual bool Equals(DefaultMessage other)
+        protected virtual bool Equals(DefaultMessage other) 
+            => Equals(other as IMessage);
+
+        public bool Equals(IMessage other)
         {
+            if (ReferenceEquals(null, other))
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, other))
+            {
+                return true;
+            }
+            
             return Id == other.Id 
                    && Equals(Exchange, other.Exchange)
                    && Equals(Headers, other.Headers) 
                    && Equals(Body, other.Body);
         }
-
-        public bool Equals(IMessage other) 
-            => Equals((object)other);
 
         public override bool Equals(object obj)
         {
@@ -40,12 +49,12 @@ namespace Dromedary
                 return true;
             }
 
-            if (obj.GetType() != this.GetType())
+            if (obj is IMessage message)
             {
-                return false;
+                return Equals(message);
             }
 
-            return Equals((DefaultMessage) obj);
+            return false;
         }
 
         public override int GetHashCode()

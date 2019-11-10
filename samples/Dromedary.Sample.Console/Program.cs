@@ -9,7 +9,7 @@ namespace Dromedary.Sample.Console
         static void Main(string[] args)
         {
             Host.CreateDefaultBuilder()
-                .ConfigureDromedaryContext(d => d
+                .ConfigureDromedaryConfiguration(d => d
                     .SetId("Console-1")
                     .SetName("Console")
                     .AddConsoleComponent()
