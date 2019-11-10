@@ -11,11 +11,11 @@ namespace Dromedary.Acceptance.Test
     {
         internal class FakeComponent : IDromedaryComponent
         {
-            public ICollection<string> Logs { get; set; }
-            public string Text { get; set; }
+            public TaskCompletionSource<object> CompletionSource { get; set; }
+            public object Object { get; set; }
             public int MaxExchangeGenerated { get; set; }
             public IEndpoint CreateEndpoint() 
-                => new FakeEndpoint(Logs, Text, MaxExchangeGenerated);
+                => new FakeEndpoint(CompletionSource, Object, MaxExchangeGenerated);
 
             public void ConfigureProperties(Action<IDromedaryComponent> config)
             {
@@ -45,34 +45,34 @@ namespace Dromedary.Acceptance.Test
         
         internal class FakeEndpoint : IEndpoint
         {
-            private readonly ICollection<string> _logs;
-            private readonly string _text;
+            private readonly TaskCompletionSource<object> _completionSource;
+            private readonly object _obj;
             private readonly int _maxExchangeGenerated;
 
-            public FakeEndpoint(ICollection<string> logs, string text, int maxExchangeGenerated)
+            public FakeEndpoint(TaskCompletionSource<object> completionSource, object obj, int maxExchangeGenerated)
             {
-                _logs = logs;
-                _text = text;
+                _completionSource = completionSource;
+                _obj = obj;
                 _maxExchangeGenerated = maxExchangeGenerated;
             }
 
             public IProducer CreateProducer() 
-                => new FakeProducer(_text, _logs, _maxExchangeGenerated);
+                => new FakeProducer(_obj, _completionSource, _maxExchangeGenerated);
 
             public IConsumer CreateConsumer() 
-                => new FakeConsumer(_logs, _text);
+                => new FakeConsumer(_completionSource, _obj);
         }
         
         internal class FakeProducer : IProducer
         {
-            private readonly ICollection<string> _logs;
-            private readonly string _text;
+            private readonly TaskCompletionSource<object> _completionSource;
+            private readonly object _obj;
             private readonly int _maxExchangeGenerated;
 
-            public FakeProducer(string text, ICollection<string> logs, int maxExchangeGenerated)
+            public FakeProducer(object obj, TaskCompletionSource<object> completionSource, int maxExchangeGenerated)
             {
-                _text = text;
-                _logs = logs;
+                _obj = obj;
+                _completionSource = completionSource;
                 _maxExchangeGenerated = maxExchangeGenerated;
             }
 
@@ -83,7 +83,7 @@ namespace Dromedary.Acceptance.Test
                 int counter = 0;
                 while (_maxExchangeGenerated > counter && !cancellationToken.IsCancellationRequested)
                 {
-                    _logs.Add(_text);
+                    _completionSource.SetResult(counter);
                     await channel.WriteAsync(Factory.Create(), cancellationToken);
                     counter++;
                 }
@@ -92,18 +92,18 @@ namespace Dromedary.Acceptance.Test
 
         internal class FakeConsumer : IConsumer
         {
-            private readonly ICollection<string> _logs;
-            private readonly string _text;
+            private readonly TaskCompletionSource<object> _completionSource;
+            private readonly object _obj;
 
-            public FakeConsumer(ICollection<string> logs, string text)
+            public FakeConsumer(TaskCompletionSource<object> completionSource, object obj)
             {
-                _logs = logs;
-                _text = text;
+                _completionSource = completionSource;
+                _obj = obj;
             }
 
             public ValueTask ExecuteAsync(IExchange exchange, CancellationToken cancellationToken = default)
             {
-                _logs.Add(_text);
+                _completionSource.SetResult(1);
                 return new ValueTask();
             }
         }

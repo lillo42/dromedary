@@ -7,8 +7,8 @@ namespace Dromedary.Builder
     {
         #region Configure
         IRouteBuilder SetId(string id);
-        
         IRouteBuilder SetDescription(string description);
+        IRouteBuilder AllowSynchronousContinuations(bool allow);
         #endregion
         
         #region From

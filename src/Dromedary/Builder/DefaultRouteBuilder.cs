@@ -13,6 +13,7 @@ namespace Dromedary.Builder
 
         private string _id = Guid.NewGuid().ToString();
         private string? _description;
+        private bool _allowSynchronousContinuations;
 
         public DefaultRouteBuilder( 
             IStatementFactory statementFactory, 
@@ -33,6 +34,12 @@ namespace Dromedary.Builder
         public IRouteBuilder SetDescription(string description)
         {
             _description = description;
+            return this;
+        }
+
+        public IRouteBuilder AllowSynchronousContinuations(bool allow)
+        {
+            _allowSynchronousContinuations = allow;
             return this;
         }
 
@@ -158,7 +165,7 @@ namespace Dromedary.Builder
         #region Build
 
         public IRoute Build() 
-            => new DefaultRoute(_id, _description, _graphBuilder.Build());
+            => new DefaultRoute(_id, _description, _graphBuilder.Build(), _allowSynchronousContinuations);
 
         #endregion
     }

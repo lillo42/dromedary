@@ -9,7 +9,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
-    public static class ServiceExtensions
+    public static class ServiceCollectionExtensions
     {
         public static IServiceCollection AddDromedary(this IServiceCollection service)
         {

@@ -8,6 +8,7 @@ namespace Dromedary
     {
         string Id { get; }
         string? Description { get; }
+        bool AllowSynchronousContinuations { get; }
         IRouteGraph RouteGraph { get; }
         Task ExecuteAsync(IServiceProvider service, CancellationToken cancellationToken = default);
     }

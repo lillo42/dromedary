@@ -10,15 +10,17 @@ namespace Dromedary
 {
     public class DefaultRoute : IRoute
     {
-        public DefaultRoute(string id, string? description, IRouteGraph routeGraph)
+        public DefaultRoute(string id, string? description, IRouteGraph routeGraph, bool allowSynchronousContinuations)
         {
             Id = id ?? throw new ArgumentNullException(nameof(id));
             Description = description;
             RouteGraph = routeGraph ?? throw new ArgumentNullException(nameof(routeGraph));
+            AllowSynchronousContinuations = allowSynchronousContinuations;
         }
 
         public string Id { get; }
         public string? Description { get; }
+        public bool AllowSynchronousContinuations { get; }
         public IRouteGraph RouteGraph { get; }
 
         public async Task ExecuteAsync(IServiceProvider service, CancellationToken cancellationToken = default)
@@ -42,7 +44,8 @@ namespace Dromedary
             var channel = Channel.CreateUnbounded<IExchange>(new UnboundedChannelOptions
             {
                 SingleWriter = true,
-                SingleReader = false, 
+                SingleReader = false,
+                AllowSynchronousContinuations = AllowSynchronousContinuations 
             });
             
             var consumer = ConsumeAsync(service, channel, cancellationToken)

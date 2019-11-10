@@ -1,5 +1,6 @@
 ﻿using Dromedary.Builder;
 using Dromedary.Component.Console;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 namespace Dromedary.Sample.Console
@@ -9,16 +10,18 @@ namespace Dromedary.Sample.Console
         static void Main(string[] args)
         {
             Host.CreateDefaultBuilder()
-                .ConfigureDromedaryConfiguration(d => d
-                    .SetId("Console-1")
-                    .SetName("Console")
-                    .AddConsoleComponent()
-                    .AddRoute(r =>
-                    {
-                        r.From<ConsoleComponent>(c => c.PromptMessage = "Text message:")
-                            .Process(e => e.Message.Body = e.Message.Body.ToString().ToUpper())
-                            .To<ConsoleComponent>();
-                    }))
+                .ConfigureServices(service =>
+                {
+                    service.AddDromedary()
+                        .AddConsoleComponent()
+                        .AddRoute(r =>
+                        {
+                            r.AllowSynchronousContinuations(true)
+                                .From<ConsoleComponent>(c => c.PromptMessage = "Text message:")
+                                .Process(e => e.Message.Body = e.Message.Body.ToString().ToUpper())
+                                .To<ConsoleComponent>();
+                        });
+                })
                 .Build()
                 .Run();
         }
