@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
+using Dromedary.Exceptions;
 using Dromedary.Factories;
 using Dromedary.Statements;
 using Microsoft.Extensions.DependencyInjection;
@@ -70,8 +71,7 @@ namespace Dromedary
                 return new ValueTask(statement.ConfigureComponentAsync(component));
             }
             
-            //TODO: Review this Exception
-            throw new NotSupportedException();
+            throw new InvalidStatementException(statement);
         }
 
 
@@ -90,11 +90,17 @@ namespace Dromedary
                     try
                     {
                         var resolver = scope.ServiceProvider.GetRequiredService<IExchangeResolver>();
+                        
                         resolver.Exchange = exchange;
+                        
                         var factory = scope.ServiceProvider.GetRequiredService<IChannelFactory>();
+                        
                         var channel = factory.Create(RouteGraph);
-                        foreach (var process in channel)
+                        var move = channel.GetAsyncEnumerator(cancellationToken);
+                        
+                        while (await move.MoveNextAsync())
                         {
+                            var process = move.Current;
                             await process.ExecuteAsync(exchange, cancellationToken);
                             
                             if (cancellationToken.IsCancellationRequested)

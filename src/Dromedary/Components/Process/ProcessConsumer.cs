@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -9,7 +10,7 @@ namespace Dromedary.Components.Process
 
         public ProcessConsumer(IProcessor processor)
         {
-            _processor = processor;
+            _processor = processor ?? throw new ArgumentNullException(nameof(processor));
         }
 
         public ValueTask ExecuteAsync(IExchange exchange, CancellationToken cancellationToken = default)

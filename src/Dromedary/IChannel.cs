@@ -1,8 +1,9 @@
+using System;
 using System.Collections.Generic;
 
 namespace Dromedary
 {
-    public interface IChannel : IEnumerable<IProcessor>, IEnumerator<IProcessor>
+    public interface IChannel : IAsyncEnumerable<IProcessor>
     {
         
     }

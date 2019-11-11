@@ -13,21 +13,16 @@ namespace Dromedary.Test.Factories
 
         public DefaultChannelFactoryTest()
         {
-            _factory = new DefaultChannelFactory(
-                Substitute.For<IExchange>(),
-                Substitute.For<IServiceProvider>());
+            _factory = new DefaultChannelFactory(Substitute.For<IServiceProvider>());
         }
 
         [Fact]
         public void Constructor_Should_Throw_When_ExchangeIsNull() 
-            => Throws<ArgumentNullException>(() => new DefaultChannelFactory(null, 
-                Substitute.For<IServiceProvider>()));
+            => Throws<ArgumentNullException>(() => new DefaultChannelFactory(Substitute.For<IServiceProvider>()));
         
         [Fact]
         public void Constructor_Should_Throw_When_ServiceProviderIsNull() 
-            => Throws<ArgumentNullException>(() => new DefaultChannelFactory(
-                Substitute.For<IExchange>(), 
-                null));
+            => Throws<ArgumentNullException>(() => new DefaultChannelFactory(null));
 
         [Fact]
         public void Create_Should_ReturnCreateChannel()

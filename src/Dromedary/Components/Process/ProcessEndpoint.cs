@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Dromedary.Activator;
+using Dromedary.Exceptions;
 
 namespace Dromedary.Components.Process
 {
@@ -45,15 +46,10 @@ namespace Dromedary.Components.Process
             if (_processType != null)
             {
                 var process = (IProcessor)_activator.CreateInstance(_processType);
-                if (process == null)
-                {
-                    throw new NotImplementedException();
-                }
-                
                 return new ProcessConsumer(process);
             }
             
-            throw new NotImplementedException();
+            throw new DromedaryException();
         }
 
         public void ConfigureProperties(IDictionary<string, object> option) 
