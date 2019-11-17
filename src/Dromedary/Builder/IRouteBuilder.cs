@@ -1,5 +1,6 @@
-using System;
+﻿using System;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace Dromedary.Builder
 {
@@ -48,6 +49,113 @@ namespace Dromedary.Builder
         IRouteBuilder Process(Type process);
         IRouteBuilder Process(Action<IExchange> process);
         IRouteBuilder Process(Func<IExchange, Task> process);
+        #endregion
+
+        #region Log
+        IRouteBuilder Log(LogLevel level);
+
+        IRouteBuilder Log(LogLevel level, string message);
+
+        IRouteBuilder Log(LogLevel level, string message, params object[] args);
+
+        IRouteBuilder Log(LogLevel level, Func<IExchange, string> message);
+
+        IRouteBuilder Log(LogLevel level, Func<IExchange, Task<string>> message);
+
+        #region Trace
+
+        IRouteBuilder LogTrace()
+        {
+            return Log(LogLevel.Trace);
+        } 
+
+        IRouteBuilder LogTrace(LogLevel level, string message)
+            => Log(LogLevel.Trace, message);
+
+        IRouteBuilder LogTrace(LogLevel level, string message, params object[] args)
+            => Log(LogLevel.Trace, message, args);
+
+        IRouteBuilder LogTrace(LogLevel level, Func<IExchange, string> message)
+            => Log(LogLevel.Trace, message);
+
+        IRouteBuilder LogTrace(LogLevel level, Func<IExchange, Task<string>> message)
+            => Log(LogLevel.Trace, message);
+
+        #endregion
+
+        #region Debug
+        IRouteBuilder LogDebug()
+            => Log(LogLevel.Debug);
+
+        IRouteBuilder LogDebug(LogLevel level, string message)
+            => Log(LogLevel.Debug, message);
+
+        IRouteBuilder LogDebug(LogLevel level, string message, params object[] args)
+            => Log(LogLevel.Debug, message, args);
+
+        IRouteBuilder LogDebug(LogLevel level, Func<IExchange, string> message)
+            => Log(LogLevel.Debug, message);
+
+        IRouteBuilder LogDebug(LogLevel level, Func<IExchange, Task<string>> message)
+            => Log(LogLevel.Debug, message);
+
+        #endregion
+
+        #region Warning
+
+        IRouteBuilder LogWarning()
+            => Log(LogLevel.Warning);
+
+        IRouteBuilder LogWarning(LogLevel level, string message)
+            => Log(LogLevel.Warning, message);
+
+        IRouteBuilder LogWarning(LogLevel level, string message, params object[] args)
+            => Log(LogLevel.Warning, message, args);
+
+        IRouteBuilder LogWarning(LogLevel level, Func<IExchange, string> message)
+            => Log(LogLevel.Warning, message);
+
+        IRouteBuilder LogWarning(LogLevel level, Func<IExchange, Task<string>> message)
+            => Log(LogLevel.Warning, message);
+
+        #endregion
+
+        #region Error
+        IRouteBuilder LogError()
+            => Log(LogLevel.Error);
+
+        IRouteBuilder LogError(LogLevel level, string message)
+            => Log(LogLevel.Error, message);
+
+        IRouteBuilder LogError(LogLevel level, string message, params object[] args)
+            => Log(LogLevel.Error, message, args);
+
+        IRouteBuilder LogError(LogLevel level, Func<IExchange, string> message)
+            => Log(LogLevel.Error, message);
+
+        IRouteBuilder LogError(LogLevel level, Func<IExchange, Task<string>> message)
+            => Log(LogLevel.Error, message);
+
+        #endregion
+
+        #region Critial
+        IRouteBuilder LogCritical()
+            => Log(LogLevel.Critical);
+
+        IRouteBuilder LogCritical(LogLevel level, string message)
+            => Log(LogLevel.Critical, message);
+
+        IRouteBuilder LogCritical(LogLevel level, string message, params object[] args)
+            => Log(LogLevel.Critical, message, args);
+
+        IRouteBuilder LogCritical(LogLevel level, Func<IExchange, string> message)
+            => Log(LogLevel.Critical, message);
+
+        IRouteBuilder LogCritical(LogLevel level, Func<IExchange, Task<string>> message)
+            => Log(LogLevel.Critical, message);
+
+        #endregion
+
         #endregion
 
         #region Build

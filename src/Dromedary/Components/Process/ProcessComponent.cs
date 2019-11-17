@@ -1,15 +1,15 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Dromedary.Activator;
 
 namespace Dromedary.Components.Process
 {
-    public class ProcessDromedaryComponent : IProcessDromedaryComponent
+    public class ProcessComponent : IProcessComponent
     {
         private readonly IActivator _activator;
 
-        public ProcessDromedaryComponent(IActivator provider)
+        public ProcessComponent(IActivator provider)
         {
             _activator = provider ?? throw new ArgumentNullException(nameof(provider));
         }

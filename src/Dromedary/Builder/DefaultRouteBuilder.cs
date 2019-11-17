@@ -1,8 +1,10 @@
-using System;
+﻿using System;
 using System.Threading.Tasks;
+using Dromedary.Components.Log;
 using Dromedary.Components.Process;
 using Dromedary.Factories;
 using Dromedary.Statements;
+using Microsoft.Extensions.Logging;
 
 namespace Dromedary.Builder
 {
@@ -15,8 +17,8 @@ namespace Dromedary.Builder
         private string? _description;
         private bool _allowSynchronousContinuations;
 
-        public DefaultRouteBuilder( 
-            IStatementFactory statementFactory, 
+        public DefaultRouteBuilder(
+            IStatementFactory statementFactory,
             IRouteGraphBuilder graphBuilder)
         {
             _statementFactory = statementFactory ?? throw new ArgumentNullException(nameof(statementFactory));
@@ -46,6 +48,7 @@ namespace Dromedary.Builder
         #endregion
 
         #region From
+
         public IRouteBuilder From(string uri)
         {
             throw new NotImplementedException();
@@ -62,10 +65,10 @@ namespace Dromedary.Builder
         {
             AddNode(_statementFactory.Create(Statement.From, componentType, configure));
             return this;
-            
+
         }
 
-        public IRouteBuilder From<T>(Func<T, Task> configure) 
+        public IRouteBuilder From<T>(Func<T, Task> configure)
             where T : class, IDromedaryComponent
         {
             AddNode(_statementFactory.Create(Statement.From, configure));
@@ -77,6 +80,7 @@ namespace Dromedary.Builder
             AddNode(_statementFactory.Create(Statement.From, componentType, configure));
             return this;
         }
+
         #endregion
 
         #region To
@@ -89,11 +93,11 @@ namespace Dromedary.Builder
         public IRouteBuilder To<T>()
             where T : class, IDromedaryComponent
         {
-            AddNode(_statementFactory.Create<T>(Statement.To, _ => {}));
+            AddNode(_statementFactory.Create<T>(Statement.To, _ => { }));
             return this;
         }
 
-        public IRouteBuilder To<T>(Action<T> configure) 
+        public IRouteBuilder To<T>(Action<T> configure)
             where T : class, IDromedaryComponent
         {
             AddNode(_statementFactory.Create(Statement.To, configure));
@@ -105,8 +109,8 @@ namespace Dromedary.Builder
             AddNode(_statementFactory.Create(Statement.To, componentType, configure));
             return this;
         }
-        
-        public IRouteBuilder To<T>(Func<T, Task> configure) 
+
+        public IRouteBuilder To<T>(Func<T, Task> configure)
             where T : class, IDromedaryComponent
         {
             AddNode(_statementFactory.Create(Statement.To, configure));
@@ -115,25 +119,27 @@ namespace Dromedary.Builder
 
         public IRouteBuilder To(Func<IDromedaryComponent, Task> configure, Type componentType)
         {
-            AddNode(_statementFactory.Create(Statement.To,componentType, configure));
+            AddNode(_statementFactory.Create(Statement.To, componentType, configure));
             return this;
         }
-        
+
         #endregion
-        
+
         #region Process
+
         public IRouteBuilder Process<T>()
             where T : IProcessor
         {
-            AddNode(_statementFactory.Create<IProcessDromedaryComponent>(Statement.Process, p =>
+            AddNode(_statementFactory.Create<IProcessComponent>(Statement.Process, p =>
             {
                 p.ProcessType = typeof(T);
             }));
             return this;
         }
+
         public IRouteBuilder Process(Type process)
         {
-            AddNode(_statementFactory.Create<IProcessDromedaryComponent>(Statement.Process, p =>
+            AddNode(_statementFactory.Create<IProcessComponent>(Statement.Process, p =>
             {
                 p.ProcessType = process;
             }));
@@ -142,7 +148,7 @@ namespace Dromedary.Builder
 
         public IRouteBuilder Process(Action<IExchange> process)
         {
-            AddNode(_statementFactory.Create<IProcessDromedaryComponent>(Statement.Process, p =>
+            AddNode(_statementFactory.Create<IProcessComponent>(Statement.Process, p =>
             {
                 p.Process = process;
             }));
@@ -151,12 +157,67 @@ namespace Dromedary.Builder
 
         public IRouteBuilder Process(Func<IExchange, Task> process)
         {
-            AddNode(_statementFactory.Create<IProcessDromedaryComponent>(Statement.Process, p =>
+            AddNode(_statementFactory.Create<IProcessComponent>(Statement.Process, p =>
             {
                 p.AsyncProcess = process;
             }));
             return this;
         }
+
+        #endregion
+
+        #region Log
+
+        public IRouteBuilder Log(LogLevel level)
+        {
+            return this;
+        }
+
+        public IRouteBuilder Log(LogLevel level, string message)
+        {
+            AddNode(_statementFactory.Create<ILogComponent>(Statement.Log, component =>
+            {
+                component.LogLevel = level;
+                component.Message = message;
+            }));
+
+            return this;
+        }
+
+        public IRouteBuilder Log(LogLevel level, string message, params object[] args)
+        {
+            AddNode(_statementFactory.Create<ILogComponent>(Statement.Log, component =>
+            {
+                component.LogLevel = level;
+                component.Message = message;
+                component.Args = args;
+            }));
+
+            return this;
+        }
+
+        public IRouteBuilder Log(LogLevel level, Func<IExchange, string> message)
+        {
+            AddNode(_statementFactory.Create<ILogComponent>(Statement.Log, component =>
+            {
+                component.LogLevel = level;
+                component.MessageFactory = message;
+            }));
+
+            return this;
+        }
+
+        public IRouteBuilder Log(LogLevel level, Func<IExchange, Task<string>> message)
+        {
+            AddNode(_statementFactory.Create<ILogComponent>(Statement.Log, component =>
+            {
+                component.LogLevel = level;
+                component.AsyncMessageFactory = message;
+            }));
+
+            return this;
+        }
+
         #endregion
 
         private void AddNode(IStatement statement)
