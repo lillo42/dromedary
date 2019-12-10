@@ -2,7 +2,7 @@ namespace Dromedary.Component.Console
 {
     public class ConsoleEndpoint : IEndpoint
     {
-        private static readonly ConsoleConsumer _consumer = new ConsoleConsumer();
+        private static readonly ConsoleConsumer s_consumer = new ConsoleConsumer();
         private readonly string _promptMessage;
 
         public ConsoleEndpoint(string promptMessage)
@@ -14,6 +14,6 @@ namespace Dromedary.Component.Console
             => new ConsoleProducer(_promptMessage);
 
         public IConsumer CreateConsumer()
-            => _consumer;
+            => s_consumer;
     }
 }

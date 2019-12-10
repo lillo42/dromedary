@@ -8,7 +8,6 @@ namespace Dromedary.Components.Process
 {
     internal class ProcessEndpoint : IEndpoint
     {
-        private readonly IActivator _activator;
         private readonly Type? _processType;
         private readonly Action<IExchange>? _process;
         private readonly Func<IExchange, Task>? _asyncProcess;
@@ -17,7 +16,6 @@ namespace Dromedary.Components.Process
             Action<IExchange>? process, 
             Func<IExchange, Task>? asyncProcess)
         {
-            _activator = provider ?? throw new ArgumentNullException(nameof(provider));
             _processType = processType;
             _process = process;
             _asyncProcess = asyncProcess;
@@ -35,24 +33,20 @@ namespace Dromedary.Components.Process
         {
             if (_process != null)
             {
-                return new ProcessConsumer(new ProcessWithAction(_process));
+                return new ProcessWithAction(_process);
             }
 
             if(_asyncProcess != null)
             {
-                return new ProcessConsumer(new ProcessWithFunc(_asyncProcess));
+                return new ProcessWithFunc(_asyncProcess);
             }
 
             if (_processType != null)
             {
-                var process = (IProcessor)_activator.CreateInstance(_processType);
-                return new ProcessConsumer(process);
+                return new ProcessWithType(_processType);
             }
             
             throw new DromedaryException();
         }
-
-        public void ConfigureProperties(IDictionary<string, object> option) 
-            => throw new NotImplementedException();
     }
 }

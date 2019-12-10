@@ -17,10 +17,6 @@ namespace Dromedary.Test.Factories
         }
 
         [Fact]
-        public void Constructor_Should_Throw_When_ExchangeIsNull() 
-            => Throws<ArgumentNullException>(() => new DefaultChannelFactory(Substitute.For<IServiceProvider>()));
-        
-        [Fact]
         public void Constructor_Should_Throw_When_ServiceProviderIsNull() 
             => Throws<ArgumentNullException>(() => new DefaultChannelFactory(null));
 

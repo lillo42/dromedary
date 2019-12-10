@@ -90,7 +90,7 @@ namespace Dromedary.Acceptance.Test
             }
         }
 
-        internal class FakeConsumer : IConsumer
+        internal class FakeConsumer : IConsumer, IProcessor
         {
             private readonly TaskCompletionSource<object> _completionSource;
             private readonly object _obj;
@@ -105,6 +105,11 @@ namespace Dromedary.Acceptance.Test
             {
                 _completionSource.SetResult(1);
                 return new ValueTask();
+            }
+
+            public IProcessor CreateProcessor(IServiceProvider provider)
+            {
+                return this;
             }
         }
     }

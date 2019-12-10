@@ -19,11 +19,6 @@ namespace Dromedary.Builder
             where T : class, IDromedaryComponent;
 
         IRouteBuilder From(Action<IDromedaryComponent> configure, Type componentType);
-
-        IRouteBuilder From<T>(Func<T, Task> configure)
-            where T : class, IDromedaryComponent;
-        
-        IRouteBuilder From(Func<IDromedaryComponent, Task> configure, Type componentType);
         #endregion
 
         #region To
@@ -36,11 +31,6 @@ namespace Dromedary.Builder
             where T : class, IDromedaryComponent;
 
         IRouteBuilder To(Action<IDromedaryComponent> configure, Type componentType);
-        
-        IRouteBuilder To<T>(Func<T, Task> configure)
-            where T : class, IDromedaryComponent;
-
-        IRouteBuilder To(Func<IDromedaryComponent, Task> configure, Type componentType);
         #endregion
 
         #region Process

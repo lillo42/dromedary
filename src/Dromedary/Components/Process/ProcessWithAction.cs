@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace Dromedary.Components.Process
 {
-    internal class ProcessWithAction : IProcessor
+    internal class ProcessWithAction : IConsumer, IProcessor
     {
         private readonly Action<IExchange> _action;
 
@@ -18,5 +18,8 @@ namespace Dromedary.Components.Process
             _action(exchange);
             return new ValueTask();
         }
+
+        public IProcessor CreateProcessor(IServiceProvider provider) 
+            => this;
     }
 }

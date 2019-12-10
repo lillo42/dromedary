@@ -146,60 +146,7 @@ namespace Dromedary.Test.Builder
                 .Received(1)
                 .Add(statement);
         }
-        
-        [Fact]
-        public void From_Should_AddFrom_When_CallFromFunc()
-        {
-            var statement = Substitute.For<IStatement>();
-            statement.Statement.Returns(Statement.From);
 
-            _statementFactory.Create(Statement.From, Arg.Any<Func<IFakeComponent, Task>>())
-                .Returns(statement);
-
-            _graphBuilder.Add(statement)
-                .Returns(_graphBuilder);
-            
-            _builder
-                .From<IFakeComponent>(component =>
-                {
-                    component.Text = _fixture.Create<string>();
-                    
-                    return Task.CompletedTask;
-                });
-            
-            _statementFactory
-                .Received(1)
-                .Create(Statement.From, Arg.Any<Func<IFakeComponent, Task>>());
-
-            _graphBuilder
-                .Received(1)
-                .Add(statement);
-        }
-        
-        [Fact]
-        public void From_Should_AddFrom_When_CallFromFuncWithType()
-        {
-            var statement = Substitute.For<IStatement>();
-            statement.Statement.Returns(Statement.From);
-
-            _statementFactory.Create(Statement.From, typeof(IFakeComponent), Arg.Any<Func<IDromedaryComponent, Task>>())
-                .Returns(statement);
-
-            _graphBuilder.Add(statement)
-                .Returns(_graphBuilder);
-            
-            _builder
-                .From(component => Task.CompletedTask, typeof(IFakeComponent));
-            
-            _statementFactory
-                .Received(1)
-                .Create(Statement.From, typeof(IFakeComponent), Arg.Any<Func<IDromedaryComponent, Task>>());
-
-            _graphBuilder
-                .Received(1)
-                .Add(statement);
-        }
-        
         internal interface IFakeComponent : IDromedaryComponent
         {
             string Text { get; set; }
@@ -207,27 +154,9 @@ namespace Dromedary.Test.Builder
         
         internal class FakeComponent : IFakeComponent
         {
-            public FakeComponent()
-            {
-            }
-
             public string Text { get; set; }
             
             public IEndpoint CreateEndpoint()
-            {
-                throw new NotImplementedException();
-            }
-
-            public void ConfigureProperties(Action<IDromedaryComponent> config)
-            {
-            }
-
-            public Task ConfigurePropertiesAsync(Func<IDromedaryComponent, Task> config)
-            {
-                throw new NotImplementedException();
-            }
-
-            public void ConfigureProperties(IDictionary<string, object> config)
             {
                 throw new NotImplementedException();
             }

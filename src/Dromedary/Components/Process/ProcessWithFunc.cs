@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace Dromedary.Components.Process
 {
-    internal class ProcessWithFunc : IProcessor
+    internal class ProcessWithFunc : IConsumer, IProcessor
     {
         private readonly Func<IExchange, Task> _func;
 
@@ -15,5 +15,8 @@ namespace Dromedary.Components.Process
 
         public ValueTask ExecuteAsync(IExchange exchange, CancellationToken cancellationToken = default) 
             => new ValueTask(_func(exchange));
+
+        public IProcessor CreateProcessor(IServiceProvider provider) 
+            => this;
     }
 }

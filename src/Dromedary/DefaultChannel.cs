@@ -23,36 +23,16 @@ namespace Dromedary
         public IAsyncEnumerator<IProcessor> GetAsyncEnumerator(CancellationToken cancellationToken = default) 
             => new Enumerator(this, cancellationToken);
 
-        internal async ValueTask<IProcessor> CreateProcessor(IStatement statement)
+        private IProcessor CreateProcessor(IStatement statement)
         {
-            var component = (IDromedaryComponent)_service.GetRequiredService(statement.Component);
-            await ConfigureComponentAsync(statement, component);
-            return component.CreateEndpoint()
-                .CreateConsumer();
-        }
-
-        internal static ValueTask ConfigureComponentAsync(IStatement statement, IDromedaryComponent component)
-        {
-            if (statement.ConfigureComponent != null)
-            {
-                statement.ConfigureComponent(component);
-                return new ValueTask();
-            }
-
-            if (statement.ConfigureComponentAsync != null)
-            {
-                return new ValueTask(statement.ConfigureComponentAsync(component));
-            }
-            
-            throw new InvalidStatementException(statement);
+            return statement.Endpoint.CreateConsumer()
+                .CreateProcessor(_service);
         }
 
         private static IRouteNode NextNode(IRouteNode current) 
             => current.Children
                 .FirstOrDefault();
-
         
-
         private class Enumerator : IAsyncEnumerator<IProcessor>
         {
             private readonly DefaultChannel _channel;
@@ -69,17 +49,17 @@ namespace Dromedary
             public ValueTask DisposeAsync() 
                 => new ValueTask();
 
-            public async ValueTask<bool> MoveNextAsync()
+            public ValueTask<bool> MoveNextAsync()
             {
                 if (_current == null || _cancellationToken.IsCancellationRequested)
                 {
                     Current = null;
-                    return false;
+                    return new ValueTask<bool>(false);
                 }
 
-                Current = await _channel.CreateProcessor(_current.Statement);
+                Current =  _channel.CreateProcessor(_current.Statement);
                 _current = _current.Children.First();
-                return false;
+                return new ValueTask<bool>(true);
             }
 
             public IProcessor Current { get; private set; }

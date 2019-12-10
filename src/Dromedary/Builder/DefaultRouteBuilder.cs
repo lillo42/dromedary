@@ -65,22 +65,7 @@ namespace Dromedary.Builder
         {
             AddNode(_statementFactory.Create(Statement.From, componentType, configure));
             return this;
-
         }
-
-        public IRouteBuilder From<T>(Func<T, Task> configure)
-            where T : class, IDromedaryComponent
-        {
-            AddNode(_statementFactory.Create(Statement.From, configure));
-            return this;
-        }
-
-        public IRouteBuilder From(Func<IDromedaryComponent, Task> configure, Type componentType)
-        {
-            AddNode(_statementFactory.Create(Statement.From, componentType, configure));
-            return this;
-        }
-
         #endregion
 
         #region To
@@ -116,13 +101,6 @@ namespace Dromedary.Builder
             AddNode(_statementFactory.Create(Statement.To, configure));
             return this;
         }
-
-        public IRouteBuilder To(Func<IDromedaryComponent, Task> configure, Type componentType)
-        {
-            AddNode(_statementFactory.Create(Statement.To, componentType, configure));
-            return this;
-        }
-
         #endregion
 
         #region Process

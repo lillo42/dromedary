@@ -1,46 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Dromedary.Activator;
 
 namespace Dromedary.Components.Process
 {
     public class ProcessComponent : IProcessComponent
     {
-        private readonly IActivator _activator;
-
-        public ProcessComponent(IActivator provider)
-        {
-            _activator = provider ?? throw new ArgumentNullException(nameof(provider));
-        }
-
         public Type? ProcessType { get; set; }
         public Action<IExchange>? Process { get; set; }
         public Func<IExchange, Task>? AsyncProcess { get; set; }
-
         public IEndpoint CreateEndpoint()
         {
-            return new ProcessEndpoint(_activator, ProcessType, Process, AsyncProcess);
+            throw new NotImplementedException();
         }
 
         public void ConfigureProperties(Action<IDromedaryComponent> config)
         {
-            if (config == null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
             config(this);
         }
 
-        public async Task ConfigurePropertiesAsync(Func<IDromedaryComponent, Task> config)
+        public Task ConfigurePropertiesAsync(Func<IDromedaryComponent, Task> config)
         {
-            if (config == null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            await config(this);
+            throw new NotImplementedException();
         }
 
         public void ConfigureProperties(IDictionary<string, object> config)

@@ -33,13 +33,8 @@ namespace Dromedary
 
             var @from = RouteGraph.Root;
             var statement = from.Statement;
-
-            var component = (IDromedaryComponent)service.GetRequiredService(statement.Component);
-            await ConfigureComponent(statement, component);
-
-            var producer = component.CreateEndpoint()
-                .CreateProducer();
-
+            
+            var producer = statement.Endpoint.CreateProducer();
             producer.Factory = service.GetRequiredService<IExchangeFactory>();
 
             var channel = Channel.CreateUnbounded<IExchange>(new UnboundedChannelOptions
@@ -56,22 +51,6 @@ namespace Dromedary
 
             await producerTask;
             await consumer;
-        }
-
-        private static ValueTask ConfigureComponent(IStatement statement, IDromedaryComponent component)
-        {
-            if (statement.ConfigureComponent != null)
-            {
-                statement.ConfigureComponent(component);
-                return new ValueTask();
-            }
-
-            if (statement.ConfigureComponentAsync != null)
-            {
-                return new ValueTask(statement.ConfigureComponentAsync(component));
-            }
-            
-            throw new InvalidStatementException(statement);
         }
 
 
