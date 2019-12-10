@@ -1,10 +1,16 @@
-namespace Dromedary.Statements
+﻿namespace Dromedary.Statements
 {
     public enum Statement
     {
         From,
         To,
         Log,
-        Process
+        Process,
+        Filter,
+        Try,
+        Catch,
+        Finally,
+        DeadLetter,
+        End
     }
 }

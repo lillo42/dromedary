@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
@@ -87,31 +87,32 @@ namespace Dromedary
                     }
 
                     using var scope = service.CreateScope();
-                    try
+                    var resolver = scope.ServiceProvider.GetRequiredService<IExchangeResolver>();
+
+                    resolver.Exchange = exchange;
+
+                    var factory = scope.ServiceProvider.GetRequiredService<IChannelFactory>();
+
+                    var channel = factory.Create(RouteGraph);
+                    var move = channel.GetAsyncEnumerator(cancellationToken);
+
+                    while (await move.MoveNextAsync())
                     {
-                        var resolver = scope.ServiceProvider.GetRequiredService<IExchangeResolver>();
-                        
-                        resolver.Exchange = exchange;
-                        
-                        var factory = scope.ServiceProvider.GetRequiredService<IChannelFactory>();
-                        
-                        var channel = factory.Create(RouteGraph);
-                        var move = channel.GetAsyncEnumerator(cancellationToken);
-                        
-                        while (await move.MoveNextAsync())
+                        try
                         {
                             var process = move.Current;
                             await process.ExecuteAsync(exchange, cancellationToken);
-                            
+
                             if (cancellationToken.IsCancellationRequested)
                             {
                                 break;
                             }
                         }
-                    }
-                    catch (Exception e)
-                    {
-                        exchange.Exception = e;
+                        catch (Exception e)
+                        {
+                            exchange.Exception = e;
+                            break;
+                        }
                     }
                 }
             }

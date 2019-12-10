@@ -1,7 +1,8 @@
-using System;
+﻿using System;
 using Dromedary;
 using Dromedary.Activator;
 using Dromedary.Builder;
+using Dromedary.Components.Log;
 using Dromedary.Components.Process;
 using Dromedary.Factories;
 using Dromedary.Generator;
@@ -32,7 +33,8 @@ namespace Microsoft.Extensions.DependencyInjection
             service.TryAddScoped<IExchangeResolver, DefaultExchangeResolver>();
             service.TryAddScoped(provider => provider.GetRequiredService<IExchangeResolver>().Exchange);
             
-            service.TryAddTransient<IProcessDromedaryComponent, ProcessDromedaryComponent>();
+            service.TryAddTransient<IProcessComponent, ProcessComponent>();
+            service.TryAddTransient<ILoggerDromedaryComponent, LogComponent>();
             service.TryAddTransient<IRouteBuilder, DefaultRouteBuilder>();
 
             return service;

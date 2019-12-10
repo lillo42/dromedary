@@ -1,5 +1,4 @@
-using System;
-using System.Collections;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -14,33 +13,25 @@ namespace Dromedary
     {
         private readonly IServiceProvider _service;
         private readonly IRouteGraph _graph;
-        private IRouteNode _currentNode;
 
         public DefaultChannel(IRouteGraph graph, IServiceProvider service)
         {
             _graph = graph ?? throw new ArgumentNullException(nameof(graph));
             _service = service;
-            _currentNode =  _graph.Root;
         }
         
-        public async IAsyncEnumerator<IProcessor> GetAsyncEnumerator(CancellationToken cancellationToken = default)
+        public IAsyncEnumerator<IProcessor> GetAsyncEnumerator(CancellationToken cancellationToken = default) 
+            => new Enumerator(this, cancellationToken);
+
+        internal async ValueTask<IProcessor> CreateProcessor(IStatement statement)
         {
-            var current = _graph.Root;
-
-            while (current != null && !cancellationToken.IsCancellationRequested)
-            {
-                var statement = current.Statement;
-                
-                var component = (IDromedaryComponent)_service.GetRequiredService(statement.Component);
-                await ConfigureComponentAsync(statement, component);
-                yield return component.CreateEndpoint()
-                    .CreateConsumer();
-
-                current = NextNode(current);
-            }
+            var component = (IDromedaryComponent)_service.GetRequiredService(statement.Component);
+            await ConfigureComponentAsync(statement, component);
+            return component.CreateEndpoint()
+                .CreateConsumer();
         }
 
-        private static ValueTask ConfigureComponentAsync(IStatement statement, IDromedaryComponent component)
+        internal static ValueTask ConfigureComponentAsync(IStatement statement, IDromedaryComponent component)
         {
             if (statement.ConfigureComponent != null)
             {
@@ -59,5 +50,39 @@ namespace Dromedary
         private static IRouteNode NextNode(IRouteNode current) 
             => current.Children
                 .FirstOrDefault();
+
+        
+
+        private class Enumerator : IAsyncEnumerator<IProcessor>
+        {
+            private readonly DefaultChannel _channel;
+            private readonly CancellationToken _cancellationToken;
+            private IRouteNode _current;
+
+            public Enumerator(DefaultChannel channel, CancellationToken cancellationToken)
+            {
+                _channel = channel ?? throw new ArgumentNullException(nameof(channel));
+                _cancellationToken = cancellationToken;
+                _current = _channel._graph.Root;
+            }
+
+            public ValueTask DisposeAsync() 
+                => new ValueTask();
+
+            public async ValueTask<bool> MoveNextAsync()
+            {
+                if (_current == null || _cancellationToken.IsCancellationRequested)
+                {
+                    Current = null;
+                    return false;
+                }
+
+                Current = await _channel.CreateProcessor(_current.Statement);
+                _current = _current.Children.First();
+                return false;
+            }
+
+            public IProcessor Current { get; private set; }
+        }
     }
 }
