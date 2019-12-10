@@ -1,8 +1,10 @@
 using System;
 using System.Threading.Tasks;
+using Dromedary.Components.Log;
 using Dromedary.Components.Process;
 using Dromedary.Factories;
 using Dromedary.Statements;
+using Microsoft.Extensions.Logging;
 
 namespace Dromedary.Builder
 {
@@ -157,6 +159,51 @@ namespace Dromedary.Builder
             }));
             return this;
         }
+        #endregion
+
+        #region Log
+
+        public IRouteBuilder Log(LogLevel level)
+        {
+            AddNode(_statementFactory.Create<LogComponent>(Statement.Log, logger =>
+            {
+                logger.LogLevel = level;
+                logger.MessageFactory = exchange => exchange.ToString();
+            }));
+            return this;
+        }
+
+        public IRouteBuilder Log(LogLevel level, string message)
+        {
+            AddNode(_statementFactory.Create<LogComponent>(Statement.Log, logger =>
+            {
+                logger.LogLevel = level;
+                logger.Message = message;
+            }));
+            return this;
+        }
+
+        public IRouteBuilder Log(LogLevel level, string message, params object[] args)
+        {
+            AddNode(_statementFactory.Create<LogComponent>(Statement.Log, logger =>
+            {
+                logger.LogLevel = level;
+                logger.Message = message;
+                logger.Args = args;
+            }));
+            return this;
+        }
+
+        public IRouteBuilder Log(LogLevel level, Func<IExchange, string> message)
+        {
+            AddNode(_statementFactory.Create<LogComponent>(Statement.Log, logger =>
+            {
+                logger.LogLevel = level;
+                logger.MessageFactory = exchange => exchange.ToString();
+            }));
+            return this;
+        }
+
         #endregion
 
         private void AddNode(IStatement statement)

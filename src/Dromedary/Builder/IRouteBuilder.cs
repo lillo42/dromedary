@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace Dromedary.Builder
 {
@@ -48,6 +49,17 @@ namespace Dromedary.Builder
         IRouteBuilder Process(Type process);
         IRouteBuilder Process(Action<IExchange> process);
         IRouteBuilder Process(Func<IExchange, Task> process);
+        #endregion
+
+        #region Log
+
+        #region Level
+        IRouteBuilder Log(LogLevel level);
+        IRouteBuilder Log(LogLevel level, string message);
+        IRouteBuilder Log(LogLevel level, string message, params object[] args);
+        IRouteBuilder Log(LogLevel level, Func<IExchange, string> message);
+        #endregion
+        
         #endregion
 
         #region Build
