@@ -2,7 +2,7 @@
 using Dromedary;
 using Dromedary.Activator;
 using Dromedary.Builder;
-using Dromedary.Components.Log;
+using Dromedary.Components.Logger;
 using Dromedary.Components.Process;
 using Dromedary.Factories;
 using Dromedary.Generator;

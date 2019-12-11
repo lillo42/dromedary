@@ -8,17 +8,25 @@ namespace Dromedary.Components.Process
 {
     internal class ProcessEndpoint : IEndpoint
     {
-        private readonly Type? _processType;
-        private readonly Action<IExchange>? _process;
-        private readonly Func<IExchange, Task>? _asyncProcess;
-        public ProcessEndpoint(IActivator provider, 
-            Type? processType, 
+        private readonly IConsumer _consumer;
+        public ProcessEndpoint(Type? processType, 
             Action<IExchange>? process, 
             Func<IExchange, Task>? asyncProcess)
         {
-            _processType = processType;
-            _process = process;
-            _asyncProcess = asyncProcess;
+            if (process != null)
+            {
+                _consumer = new ProcessWithAction(process);
+            }
+            
+            if (asyncProcess != null)
+            {
+                _consumer = new ProcessWithFunc(asyncProcess);
+            }
+            
+            if (processType != null)
+            {
+                _consumer = new ProcessWithType(processType);
+            }
 
             if (processType == null && process == null && asyncProcess == null)
             {
@@ -29,24 +37,7 @@ namespace Dromedary.Components.Process
         public IProducer CreateProducer() 
             => throw new NotImplementedException();
 
-        public IConsumer CreateConsumer()
-        {
-            if (_process != null)
-            {
-                return new ProcessWithAction(_process);
-            }
-
-            if(_asyncProcess != null)
-            {
-                return new ProcessWithFunc(_asyncProcess);
-            }
-
-            if (_processType != null)
-            {
-                return new ProcessWithType(_processType);
-            }
-            
-            throw new DromedaryException();
-        }
+        public IConsumer CreateConsumer() 
+            => _consumer;
     }
 }

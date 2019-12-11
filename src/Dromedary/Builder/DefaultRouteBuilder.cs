@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Dromedary.Components.Log;
+using Dromedary.Components.Logger;
 using Dromedary.Components.Process;
 using Dromedary.Factories;
 using Dromedary.Statements;
