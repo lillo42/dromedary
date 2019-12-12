@@ -1,5 +1,4 @@
 using System;
-using Dromedary.Exceptions;
 using Microsoft.Extensions.Logging;
 
 namespace Dromedary.Components.Logger
@@ -28,7 +27,7 @@ namespace Dromedary.Components.Logger
 
         public IProducer CreateProducer()
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public IConsumer CreateConsumer() 

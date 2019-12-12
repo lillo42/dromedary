@@ -1,5 +1,4 @@
 using System;
-using System.Runtime.Serialization;
 using Dromedary.Statements;
 
 namespace Dromedary.Exceptions

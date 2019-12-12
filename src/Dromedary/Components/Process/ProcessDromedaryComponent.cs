@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Dromedary.Components.Process
 {
-    public class ProcessComponent : IProcessComponent
+    public class ProcessDromedaryComponent : IProcessDromedaryComponent
     {
         public Type? ProcessType { get; set; }
         public Action<IExchange>? Process { get; set; }

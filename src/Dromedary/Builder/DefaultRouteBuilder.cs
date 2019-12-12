@@ -108,7 +108,7 @@ namespace Dromedary.Builder
         public IRouteBuilder Process<T>()
             where T : IProcessor
         {
-            AddNode(_statementFactory.Create<IProcessComponent>(Statement.Process, p =>
+            AddNode(_statementFactory.Create<IProcessDromedaryComponent>(Statement.Process, p =>
             {
                 p.ProcessType = typeof(T);
             }));
@@ -117,7 +117,7 @@ namespace Dromedary.Builder
 
         public IRouteBuilder Process(Type process)
         {
-            AddNode(_statementFactory.Create<IProcessComponent>(Statement.Process, p =>
+            AddNode(_statementFactory.Create<IProcessDromedaryComponent>(Statement.Process, p =>
             {
                 p.ProcessType = process;
             }));
@@ -126,7 +126,7 @@ namespace Dromedary.Builder
 
         public IRouteBuilder Process(Action<IExchange> process)
         {
-            AddNode(_statementFactory.Create<IProcessComponent>(Statement.Process, p =>
+            AddNode(_statementFactory.Create<IProcessDromedaryComponent>(Statement.Process, p =>
             {
                 p.Process = process;
             }));
@@ -135,7 +135,7 @@ namespace Dromedary.Builder
 
         public IRouteBuilder Process(Func<IExchange, Task> process)
         {
-            AddNode(_statementFactory.Create<IProcessComponent>(Statement.Process, p =>
+            AddNode(_statementFactory.Create<IProcessDromedaryComponent>(Statement.Process, p =>
             {
                 p.AsyncProcess = process;
             }));
@@ -145,11 +145,6 @@ namespace Dromedary.Builder
         #endregion
 
         #region Log
-        public IRouteBuilder Log(LogLevel level)
-        {
-            return this;
-        }
-
         public IRouteBuilder Log(LogLevel level, string message)
         {
             AddNode(_statementFactory.Create<ILoggerDromedaryComponent>(Statement.Log, component =>
@@ -181,6 +176,14 @@ namespace Dromedary.Builder
                 component.MessageFactory = message;
             }));
 
+            return this;
+        }
+        #endregion
+        
+        #region Filter
+        public IRouteBuilder Filter(Func<IExchange, bool> filter)
+        {
+            
             return this;
         }
         #endregion

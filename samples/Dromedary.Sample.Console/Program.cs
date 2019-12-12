@@ -1,5 +1,4 @@
-﻿using Dromedary.Builder;
-using Dromedary.Component.Console;
+﻿using Dromedary.Component.Console;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 

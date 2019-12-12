@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace Dromedary.Components.Process
 {
-    public interface IProcessComponent : IDromedaryComponent
+    public interface IProcessDromedaryComponent : IDromedaryComponent
     {
         Type? ProcessType { get; set; }
         Action<IExchange>? Process { get; set; }

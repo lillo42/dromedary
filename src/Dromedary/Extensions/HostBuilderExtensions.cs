@@ -1,8 +1,6 @@
 using System;
-using Dromedary;
 using Dromedary.Builder;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Microsoft.Extensions.Hosting
 {

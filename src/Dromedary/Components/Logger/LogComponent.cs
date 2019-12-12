@@ -7,13 +7,6 @@ namespace Dromedary.Components.Logger
 {
     internal class LogComponent : ILoggerDromedaryComponent
     {
-        private readonly ILoggerFactory _factory;
-
-        public LogComponent(ILoggerFactory factory)
-        {
-            _factory = factory ?? throw new ArgumentNullException(nameof(factory));
-        }
-
         public string? Message { get; set; }
         public Func<IExchange, string>? MessageFactory { get; set; }
         public object[] Args { get; set; } = new object[0];

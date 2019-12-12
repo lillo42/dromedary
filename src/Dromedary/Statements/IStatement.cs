@@ -1,6 +1,3 @@
-using System;
-using System.Threading.Tasks;
-
 namespace Dromedary.Statements
 {
     public interface IStatement

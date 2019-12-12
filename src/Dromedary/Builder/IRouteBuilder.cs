@@ -114,6 +114,10 @@ namespace Dromedary.Builder
         
         #endregion
 
+        #region Filter
+        IRouteBuilder Filter(Func<IExchange, bool> filter);
+        #endregion
+        
         #region Build
         IRoute Build();
         #endregion

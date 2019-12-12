@@ -1,4 +1,5 @@
 using System;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Dromedary.Factories
 {
@@ -12,6 +13,6 @@ namespace Dromedary.Factories
         }
 
         public IChannel Create(IRouteGraph graph) 
-            => new DefaultChannel(graph, _serviceProvider);
+            => new DefaultChannel(graph, _serviceProvider, _serviceProvider.GetRequiredService<IReadOutput>());
     }
 }
